@@ -1,7 +1,4 @@
-*.py[cod]
-
-# C extensions
-*.so
+*.py[co]
 
 # Packages
 *.egg
@@ -15,21 +12,45 @@ var
 sdist
 develop-eggs
 .installed.cfg
-lib
-lib64
+.*.sw*
+# *.swp
+# *.swo
+# *.swn
+# *.swm
+# *.swl
+# *.swk
 
 # Installer logs
 pip-log.txt
 
+# Gimp files
+*.xcf
+
 # Unit test / coverage reports
 .coverage
 .tox
-nosetests.xml
 
-# Translations
+#Translations
 *.mo
 
-# Mr Developer
+#Mr Developer
 .mr.developer.cfg
-.project
-.pydevproject
+
+# Generated files
+.sass-cache
+# generated.css
+static/css/*
+generated.js
+generated.css
+generated/
+
+__pycache__
+.DS_Store
+
+dump.rdb
+
+tmp/
+*#
+*~
+
+chromedriver.log
