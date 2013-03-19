@@ -39,4 +39,4 @@ released version.  What spoken language it is in.
 Getting Started
 ==================================
 
-    $ easy_install easy_install zc.buildout==1.7.0
+    $ easy_install zc.buildout==1.7.0
