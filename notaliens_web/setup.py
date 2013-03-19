@@ -10,7 +10,8 @@ requires = [
     'pyramid',
     'pyramid_debugtoolbar',
     'waitress',
-    ]
+    'Paste'
+]
 
 setup(name='notaliens_web',
       version='0.0',
