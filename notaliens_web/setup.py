@@ -36,5 +36,8 @@ setup(name='notaliens_web',
       entry_points="""\
       [paste.app_factory]
       main = notaliens_web:main
+
+      [console_scripts]
+      initialize_notaliens_db = notaliens_web.scripts.initializedb:main
       """,
       )

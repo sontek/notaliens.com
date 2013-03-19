@@ -56,3 +56,5 @@ tmp/
 chromedriver.log
 
 src/
+
+*.sqlite
