@@ -54,3 +54,5 @@ tmp/
 *~
 
 chromedriver.log
+
+src/
