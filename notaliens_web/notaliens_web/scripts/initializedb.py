@@ -11,6 +11,7 @@ from pyramid.paster import (
 
 from ..models import *
 
+from notaliens.core.db import Base
 from notaliens.core.db import DBSession
 
 def usage(argv):
