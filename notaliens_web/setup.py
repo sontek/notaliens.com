@@ -11,7 +11,8 @@ requires = [
     'pyramid_debugtoolbar',
     'waitress',
     'Paste',
-    'PasteDeploy'
+    'PasteDeploy',
+    'colander>0.9.9'
 ]
 
 setup(name='notaliens_web',
