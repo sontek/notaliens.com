@@ -12,7 +12,7 @@ requires = [
     'waitress',
     'Paste',
     'PasteDeploy',
-    'colander>0.9.9'
+    'colander'
 ]
 
 setup(name='notaliens_web',
