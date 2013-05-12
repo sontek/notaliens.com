@@ -12,7 +12,7 @@ The site is a combination of these namespaced packages:
     - notaliens.jobs: The section of the website dedicated to posting and searching for Pyramid jobs
 
 
-We support both Python 2.7 and Python 3.3.
+We are written with only Python 3.3 in mind.
 
 
 Features
