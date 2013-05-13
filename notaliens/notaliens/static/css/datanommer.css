@@ -1,0 +1,38 @@
+.message-preview {
+  display: none;
+  border: solid 1px;
+  background-color: #FFF;
+  padding: 10px;
+  overflow: scroll;
+}
+
+.ui-dialog-titlebar-close {
+  border-left: solid 1px;
+  border-right: solid 1px;
+  border-top: solid 1px;
+  background-color: #FFF;
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
+}
+
+table tbody {
+    background-color: white;
+}
+
+table tbody, table td {
+    border: solid 1px;
+}
+
+table td {
+  padding: 10px;
+}
+
+pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
+
