@@ -14,6 +14,7 @@ requires = [
     , 'horus'
     , 'sqlalchemy'
     , 'mako'
+    , 'pyramid_mailer'
 ]
 
 setup(
