@@ -18,6 +18,7 @@ def main(global_config, **settings):
     config.include('notaliens.core')
     config.include('notaliens.people', route_prefix='/people')
     config.include('notaliens.identity', route_prefix='/identity')
+
     config.scan()
 
     return config.make_wsgi_app()

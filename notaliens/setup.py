@@ -17,6 +17,8 @@ requires = [
     , 'pyramid_mailer'
     , 'deform_bootstrap'
     , 'psycopg2'
+    , 'pytz'
+    , 'pycountry'
 ]
 
 setup(
@@ -43,5 +45,8 @@ setup(
     , entry_points="""\
     [paste.app_factory]
     main = notaliens:main
+
+    [console_scripts]
+    notaliens_create_db = notaliens.scripts.create:main
     """
 )
