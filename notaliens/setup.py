@@ -7,7 +7,7 @@ README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'pyramid'
+    'pyramid>=1.4.2'
     , 'pyramid_debugtoolbar'
     , 'waitress'
     , 'validictory'
@@ -15,6 +15,8 @@ requires = [
     , 'sqlalchemy'
     , 'mako'
     , 'pyramid_mailer'
+    , 'deform_bootstrap'
+    , 'psycopg2'
 ]
 
 setup(

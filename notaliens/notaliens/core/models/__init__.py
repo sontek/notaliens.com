@@ -1,17 +1,12 @@
-from sqlalchemy.orm                 import scoped_session
-from sqlalchemy.orm                 import sessionmaker
 from sqlalchemy.ext.declarative     import declared_attr
 from sqlalchemy.ext.compiler        import compiles
 from sqlalchemy.sql                 import expression
 from sqlalchemy.ext.declarative     import declarative_base
 
-from zope.sqlalchemy                import ZopeTransactionExtension
 from datetime                       import datetime
 
 import sqlalchemy as sa
 import re
-
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
 class UTCNow(expression.FunctionElement):
     type = sa.DateTime()
