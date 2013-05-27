@@ -40,3 +40,6 @@ class UserGroup(NullPkMixin, UserGroupMixin):
 
 class User(NullPkMixin, UserMixin):
     pass
+
+def get_user_by_username(session, username):
+    return session.query(User).filter(User.username == username).one()

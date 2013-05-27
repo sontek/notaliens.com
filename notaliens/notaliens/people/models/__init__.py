@@ -12,6 +12,7 @@ from sqlalchemy.types import Unicode
 from sqlalchemy.types import Integer
 from sqlalchemy import Table
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref
 
 user_languages = Table('user_languages', Base.metadata,
     Column('profile_pk', Integer, ForeignKey('user_profile.pk')),
@@ -25,7 +26,7 @@ class UserProfile(Base, TranslatableMixin):
     ]
 
     user_pk = Column(Integer, ForeignKey(User.pk))
-    user = relationship(User, uselist=False, backref='profile')
+    user = relationship(User, backref=backref('profile', uselist=False))
     description = Column(UnicodeText, nullable=True)
     first_name = Column(Unicode(255), nullable=True)
     last_name = Column(Unicode(255), nullable=True)
