@@ -118,12 +118,15 @@ def setup_global_data(session):
 
 def generate_default_data(session):
     from notaliens.identity.models import User
+    from notaliens.people.models import UserProfile
 
     global_data = setup_global_data(session)
 
     username = input("What is your username?: ")
     email = input("What is your email?: ")
     password = getpass("What is your password?: ")
+    first_name = input("What is your first name?: ")
+    last_name = input("What is your last name?: ")
 
 
     admin = User(
@@ -132,7 +135,14 @@ def generate_default_data(session):
         , password=password
     )
 
+    profile = UserProfile(
+        user=admin
+        , first_name=first_name
+        , last_name=last_name
+    )
+
     session.add(admin)
+    session.add(profile)
 
 def main(argv=sys.argv):
     if len(argv) != 2:

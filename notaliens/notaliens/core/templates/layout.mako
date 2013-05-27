@@ -50,7 +50,7 @@
                 </ul>
                 <div class="navbar-form pull-right">
                   % if request.user:
-                    Welcome ${request.user.username} (<a href="${request.route_url('logout')}">Logout</a>)
+                    Welcome ${request.user.profile[0].display_name} (<a href="${request.route_url('logout')}">Logout</a>)
                   % else:
                     <a href="${request.route_url('login')}">Login</a>
                   % endif
