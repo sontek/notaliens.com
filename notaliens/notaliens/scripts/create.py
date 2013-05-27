@@ -127,6 +127,7 @@ def generate_default_data(session):
     password = getpass("What is your password?: ")
     first_name = input("What is your first name?: ")
     last_name = input("What is your last name?: ")
+    one_liner = input("Please provide a 140 char description: ")
 
 
     admin = User(
@@ -139,6 +140,7 @@ def generate_default_data(session):
         user=admin
         , first_name=first_name
         , last_name=last_name
+        , one_liner=one_liner
     )
 
     session.add(admin)

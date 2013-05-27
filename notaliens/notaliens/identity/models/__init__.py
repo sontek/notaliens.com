@@ -2,9 +2,11 @@ from horus.models import GroupMixin
 from horus.models import UserMixin
 from horus.models import UserGroupMixin
 from horus.models import ActivationMixin
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.declarative import declared_attr
 
 from notaliens.core.models import Base
+from notaliens.cache import cacheable
 
 class NullPkMixin(Base):
     """ Horus is now going to default to 'id' as the primary key
@@ -41,5 +43,16 @@ class UserGroup(NullPkMixin, UserGroupMixin):
 class User(NullPkMixin, UserMixin):
     pass
 
-def get_user_by_username(session, username):
-    return session.query(User).filter(User.username == username).one()
+
+@cacheable()
+def get_user_by_username(session, username, with_profile=True):
+    query = session.query(User).filter(
+        User.username == username
+    )
+    
+    if with_profile:
+        query = query.options(joinedload('profile'))
+
+    user = query.one()
+
+    return user

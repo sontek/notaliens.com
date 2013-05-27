@@ -19,6 +19,16 @@ user_languages = Table('user_languages', Base.metadata,
     Column('language_pk', Integer, ForeignKey(Language.pk))
 )
 
+user_skills = Table('user_skills', Base.metadata,
+    Column('profile_pk', Integer, ForeignKey('user_profile.pk')),
+    Column('skill_tag_pk', Integer, ForeignKey('skill_tag.pk'))
+)
+
+
+class SkillTag(Base, TranslatableMixin):
+    __translatables__ = ["name"]
+    name = Column(UnicodeText, nullable=False, unique=True)
+
 
 class UserProfile(Base, TranslatableMixin):
     __translatables__ = [
@@ -28,6 +38,7 @@ class UserProfile(Base, TranslatableMixin):
     user_pk = Column(Integer, ForeignKey(User.pk))
     user = relationship(User, backref=backref('profile', uselist=False))
     description = Column(UnicodeText, nullable=True)
+    one_liner  = Column(Unicode(140), nullable=False)
     first_name = Column(Unicode(255), nullable=True)
     last_name = Column(Unicode(255), nullable=True)
     blog_rss = Column(Unicode(255), nullable=True)
@@ -41,6 +52,7 @@ class UserProfile(Base, TranslatableMixin):
     languages = relationship(Language, secondary=user_languages)
     timezone_pk = Column(Integer, ForeignKey(Timezone.pk), nullable=True)
     timezone = relationship(Timezone)
+    skills = relationship("SkillTag", secondary=user_skills)
 
     @property
     def display_name(self):

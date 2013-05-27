@@ -19,6 +19,9 @@ requires = [
     , 'psycopg2'
     , 'pytz'
     , 'pycountry'
+    , 'dogpile.cache'
+    , 'redis'
+    , 'colorama'
 ]
 
 setup(
