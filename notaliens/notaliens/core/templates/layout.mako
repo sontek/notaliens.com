@@ -42,20 +42,18 @@
               <div class="nav-collapse collapse">
                 <ul class="nav">
                   % if request.matched_route:
-                    <li ${'class=active' if request.matched_route.name.startswith('home') else ''}><a href="/">Home</a></li>
+                    <li ${'class=active' if request.matched_route.name.startswith('index') else ''}><a href="/">Home</a></li>
                     <li ${'class=active' if request.matched_route.name.startswith('people') else ''}><a href="/people/">People</a></li>
                     <li ${'class=active' if request.matched_route.name.startswith('sites') else ''}><a href="/sites/">Sites</a></li>
                     <li ${'class=active' if request.matched_route.name.startswith('jobs') else ''}><a href="/jobs/">Jobs</a></li>
                   % endif
                 </ul>
                 <div class="navbar-form pull-right">
-                  <ul class="nav">
                   % if request.user:
-                    <li><a href="${request.route_url('logout')}">Logout</a></li>
+                    Welcome ${request.user.username} (<a href="${request.route_url('logout')}">Logout</a>)
                   % else:
-                    <li><a href="${request.route_url('login')}">Login</a></li>
+                    <a href="${request.route_url('login')}">Login</a>
                   % endif
-                  </ul>
                 </div>
               </div><!--/.nav-collapse -->
           </div>
