@@ -173,6 +173,12 @@ def start_timing_request(event):
         log_values = []
         templates = []
 
+        for log_key in log_keys:
+            log_func = loggers[log_key]
+            log_value = log_func(request)
+            log_values.append(log_value)
+            templates.append("%s=%%(%s)s" % (log_key, log_key))  # E.g.: ms=%(ms)s
+
         if found_view:
             if not isinstance(found_view, static_view):
                 templates.append("%s.%s" % (
@@ -183,11 +189,6 @@ def start_timing_request(event):
             else:
                 templates.append("%s" % request.path)
 
-        for log_key in log_keys:
-            log_func = loggers[log_key]
-            log_value = log_func(request)
-            log_values.append(log_value)
-            templates.append("%s=%%(%s)s" % (log_key, log_key))  # E.g.: ms=%(ms)s
 
         log_template = log_separator.join(templates)
         template_params = dict(zip(log_keys, log_values))

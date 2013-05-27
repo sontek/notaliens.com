@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declared_attr
 
 from notaliens.core.models import Base
 from notaliens.cache import cacheable
+from notaliens.log import perflog
 
 class NullPkMixin(Base):
     """ Horus is now going to default to 'id' as the primary key
@@ -44,6 +45,7 @@ class User(NullPkMixin, UserMixin):
     pass
 
 
+@perflog()
 @cacheable()
 def get_user_by_username(session, username, with_profile=True):
     query = session.query(User).filter(
