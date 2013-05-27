@@ -158,7 +158,16 @@ def start_timing_request(event):
 
 
         def ms_logger(request):
-            return "%d" % (final_time * 1000)
+            end = final_time * 1000
+
+            slow_request_time = int(
+                request.registry.settings.get('log.slow_request_time')
+            )
+
+            if end > slow_request_time:
+                logger.warn("Warning! Slow running request!")
+
+            return "%d" % end
 
         loggers = {
             'ms': ms_logger,
@@ -237,6 +246,8 @@ def log_request_id(event):
     if colored_logs:
         request_id = colorize_text(request_id)
 
+    # we do this so that functions in the same thread will
+    # also get the request.id tacked on to it
     current_thread.name = "%s][request=%s" % (
         original_name,
         request_id,
