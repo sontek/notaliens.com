@@ -50,10 +50,10 @@
                 </ul>
                 <div class="navbar-form pull-right">
                   <ul class="nav">
-                  % if True:
-                    <li><a href="${request.route_url('login')}">Login</a></li>
+                  % if request.user:
+                    <li><a href="${request.route_url('logout')}">Logout</a></li>
                   % else:
-                      <li><a href="#">Login</a></li>
+                    <li><a href="${request.route_url('login')}">Login</a></li>
                   % endif
                   </ul>
                 </div>
