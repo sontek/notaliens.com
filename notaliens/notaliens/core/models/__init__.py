@@ -1,12 +1,22 @@
-from sqlalchemy.ext.declarative     import declared_attr
-from sqlalchemy.ext.compiler        import compiles
-from sqlalchemy.sql                 import expression
-from sqlalchemy.ext.declarative     import declarative_base
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.sql import expression
+from sqlalchemy.ext.declarative import declarative_base
 
-from datetime                       import datetime
+from datetime import datetime
 
 import sqlalchemy as sa
 import re
+
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
+
+from notaliens.cache.sa import query_callable
+from notaliens.cache import regions
+
+DBSession = scoped_session(
+    sessionmaker(query_cls=query_callable(regions))
+)
 
 class UTCNow(expression.FunctionElement):
     type = sa.DateTime()

@@ -61,6 +61,7 @@
       </div>
 
       <div class="container-fluid">
+        ${render_flash_messages()|n}
         ${next.body()}
         <hr>
 

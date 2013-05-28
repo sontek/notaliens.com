@@ -1,9 +1,9 @@
 from sqlalchemy import engine_from_config
-from sqlalchemy.orm  import sessionmaker
 from hem.interfaces import IDBSession
 from notaliens.core.interfaces import IDBSessionMaker
+from notaliens.core.models import DBSession
 
-def db_session(request):
+def get_db_session(request):
     """
     This will be lazily loaded whenever the `db_session` attribute
     is accessed on the request.  It will create the SQLAlchemy session
@@ -11,8 +11,7 @@ def db_session(request):
     session
     """
 
-    maker = request.registry.getUtility(IDBSessionMaker)
-    session = maker()
+    session = request.registry.getUtility(IDBSessionMaker)
 
     def cleanup(request):
         session.close()
@@ -29,13 +28,13 @@ def includeme(config):
         config.registry.settings, prefix='sqlalchemy.'
     )
 
-    db_session_maker = sessionmaker(bind=engine)
+    DBSession.configure(bind=engine)
 
-    config.registry.registerUtility(db_session_maker, IDBSessionMaker)
+    config.registry.registerUtility(DBSession, IDBSessionMaker)
 
     # primarily used for horus
-    config.registry.registerUtility(db_session, IDBSession)
+    config.registry.registerUtility(get_db_session, IDBSession)
 
-    config.add_request_method(db_session, reify=True)
+    config.add_request_method(get_db_session, 'db_session', reify=True)
 
     config.include('notaliens.core.routes')

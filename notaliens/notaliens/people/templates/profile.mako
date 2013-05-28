@@ -3,6 +3,13 @@
 
 <div class="row">
   <div class="span3">
+    % if request.user:
+      % if request.user.pk == user.pk:
+        <div>
+          <a href="${request.route_url('edit_profile', user_id=user.pk)}"><button class="primary">Edit</button></a>
+        </div>
+      % endif
+    % endif
     <img src="${user.gravatar_url(size=120)}" />
     <h3>${user.profile.display_name}</h3>
     <em>${user.profile.one_liner}</em>

@@ -9,6 +9,7 @@ import inspect
 import json
 import logging
 import random
+import hashlib
 
 logger = logging.getLogger(__name__)
 
@@ -87,10 +88,26 @@ class SafeCacheRegion(CacheRegion):
             return True
 
         return False
+    
+
+def md5_key_mangler(key):
+    """Receive cache keys as long concatenated strings;
+    distill them into an md5 hash.
+
+    """
+    d = hashlib.md5(key.encode('utf-8'))
+    return d.hexdigest()
 
 
 # create the cache region before importing from models, they will need it.
 cache_region = SafeCacheRegion()
+sql_cache_region = SafeCacheRegion(key_mangler=md5_key_mangler)
+
+regions = {
+    "default": cache_region
+    , "sql": sql_cache_region
+}
+
 
 def get_cache_settings(request, prefix='cache.'):
     """
@@ -252,8 +269,8 @@ def includeme(config):
     settings = config.registry.settings
 
     cache_enabled = asbool(settings.get('cache.enabled', False))
-    cache_region.enabled = cache_enabled
     logger.info('dogpile_cache_enabled=%s' % cache_enabled)
+
 
     # Enable caching?
     if not cache_enabled:
@@ -262,7 +279,9 @@ def includeme(config):
         )
         return
 
-    cache_region.configure_from_config(settings, 'cache.')
+    for key, region in regions.items():
+        region.enabled = cache_enabled
+        region.configure_from_config(settings, 'cache.')
 
     # Create a request.cache_settings object that views can use to inspect
     # what is going on with the cache
