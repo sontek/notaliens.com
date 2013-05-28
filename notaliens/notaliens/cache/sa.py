@@ -139,7 +139,7 @@ def _key_from_query(query, qualifier=None):
 
     """
 
-    stmt = query.statement
+    stmt = query.with_labels().statement
     compiled = stmt.compile()
     params = compiled.params
 
