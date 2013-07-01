@@ -18,7 +18,7 @@ def people_index(request):
 def people_profile_view(request):
     user = get_user_by_username(
         request.db_session,
-        request.matchdict['user_name']
+        request.matchdict['username']
     )
 
     return {

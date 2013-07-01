@@ -2,14 +2,14 @@ from notaliens.people.security import UserFactory
 
 def includeme(config):
     config.add_route('people_index', '/')
-    config.add_route('people_profile', '/{user_name}')
+    config.add_route('people_profile', '/{username}')
 
 
     config.add_route(
         'people_edit_profile'
-        , '/{user_name}/edit'
+        , '/{username}/edit'
         , factory=UserFactory
-        , traverse='/{user_name}'
+        , traverse='/{username}'
     )
 
     # override horus
