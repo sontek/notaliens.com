@@ -314,9 +314,9 @@ def includeme(config):
 
     config.add_tween(get_key('log_request_factory'))
 
-    config.registry[get_key("registered_loggers")] = {}
-    config.registry[get_key("order")] = []
-    config.registry[get_key("separator")] = " "
+    config.registry[get_key('registered_loggers')] = {}
+    config.registry[get_key('order')] = []
+    config.registry[get_key('separator')] = " "
 
     config.add_directive('add_logging', add_logging)
     config.add_directive('logging_separator', set_logging_separator)

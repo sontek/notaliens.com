@@ -4,11 +4,11 @@ from pyramid.settings import asbool
 from datetime import datetime
 from functools import wraps
 from hashlib import sha1
+from uuid import uuid4
 
 import inspect
 import json
 import logging
-import random
 import hashlib
 
 logger = logging.getLogger(__name__)
@@ -142,8 +142,7 @@ def invalidate_group(group_key):
     group_key_value = cache_region.get(group_key)
 
     if group_key_value is not NO_VALUE:
-        #TODO: Send PR to dogpile.cache to support .increment()
-        cache_region.set(group_key, group_key_value+1)
+        cache_region.set(group_key, str(uuid4()))
 
 
 def cacheable(cache_group=None, namespace=None, expiration_time=None,
@@ -225,7 +224,7 @@ def cacheable(cache_group=None, namespace=None, expiration_time=None,
                 group_key_value = cache_region.get(cgroup)
 
                 if group_key_value is NO_VALUE:
-                    group_key_value = random.randint(0, 10000)
+                    group_key_value = str(uuid4())
 
                 func_key = "%s_group_%s" % (func_key, group_key_value)
 
