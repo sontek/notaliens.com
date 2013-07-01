@@ -7,21 +7,21 @@ README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
-    'pyramid>=1.4.2'
-    , 'pyramid_debugtoolbar'
-    , 'waitress'
-    , 'validictory'
-    , 'horus'
-    , 'sqlalchemy'
-    , 'mako'
-    , 'pyramid_mailer'
+    'colorama'
     , 'deform_bootstrap'
-    , 'psycopg2'
-    , 'pytz'
-    , 'pycountry'
     , 'dogpile.cache'
+    , 'horus'
+    , 'mako'
+    , 'psycopg2'
+    , 'pycountry'
+    , 'pyramid_mailer'
+    , 'pyramid>=1.4.2'
+    , 'pyramid_debugtoolbar'
+    , 'pytz'
     , 'redis'
-    , 'colorama'
+    , 'sqlalchemy'
+    , 'validictory'
+    , 'gunicorn'
 ]
 
 setup(

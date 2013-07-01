@@ -29,7 +29,6 @@ class NullPkMixin(Base):
         return None
 
 
-
 class Activation(NullPkMixin, ActivationMixin):
     pass
 
