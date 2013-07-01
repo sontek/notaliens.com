@@ -1,12 +1,15 @@
 from pyramid.view import view_config
-from notaliens.identity.models import get_user_by_username
+from notaliens.people.models import get_user_by_username
+from notaliens.people.models import get_all_users
 
 @view_config(
     route_name='people_index'
     , renderer='notaliens:people/templates/index.mako'
 )
 def people_index(request):
-    return {}
+    return {
+        'users': get_all_users(request.db_session)
+    }
 
 @view_config(
     route_name='people_profile'

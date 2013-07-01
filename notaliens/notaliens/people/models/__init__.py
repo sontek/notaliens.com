@@ -4,6 +4,10 @@ from notaliens.core.models.meta import Country
 from notaliens.core.models.meta import Language
 from notaliens.core.models.meta import Timezone
 from notaliens.identity.models import User
+from notaliens.cache.sa import FromCache
+from notaliens.cache.sa import RelationshipCache
+from notaliens.log import perflog
+
 
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
@@ -13,6 +17,7 @@ from sqlalchemy.types import Integer
 from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import backref
+from sqlalchemy.orm import joinedload
 
 user_languages = Table('user_languages', Base.metadata,
     Column('profile_pk', Integer, ForeignKey('user_profile.pk')),
@@ -65,3 +70,39 @@ class UserProfile(Base, TranslatableMixin):
             return self.first_name
         else:
             return self.user.username
+
+
+@perflog()
+def get_user_by_username(session, username, with_profile=True,
+        from_cache=True):
+
+    query = session.query(User).filter(
+        User.username == username
+    )
+
+    if with_profile:
+        query = query.options(joinedload('profile'))
+
+    if from_cache: 
+        query = query.options(FromCache())
+        query = query.options(RelationshipCache(User.profile))
+
+    user = query.one()
+
+    return user
+
+@perflog()
+def get_all_users(session, with_profile=True, from_cache=True):
+
+    query = session.query(User)
+
+    if with_profile:
+        query = query.options(joinedload('profile'))
+
+    if from_cache: 
+        query = query.options(FromCache())
+        query = query.options(RelationshipCache(User.profile))
+
+    users = query.all()
+
+    return users
