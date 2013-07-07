@@ -4,6 +4,7 @@ from horus.models import UserGroupMixin
 from horus.models import ActivationMixin
 from sqlalchemy.ext.declarative import declared_attr
 
+from notaliens.core.models import JsonSerializableMixin
 from notaliens.core.models import Base
 
 class NullPkMixin(Base):
@@ -37,5 +38,16 @@ class UserGroup(NullPkMixin, UserGroupMixin):
     pass
 
 
-class User(NullPkMixin, UserMixin):
-    pass
+class User(NullPkMixin, UserMixin, JsonSerializableMixin):
+    _json_blacklist = ['salt', 'profile']
+
+    def __json__(self, request):
+        """ JSON Serialization, that overrides the default horus __json__
+        to also ignore things in _json_blacklist
+        """
+        results = super(User, self).__json__(request)
+
+        for key in self._json_blacklist:
+            results.pop(key, None)
+
+        return results

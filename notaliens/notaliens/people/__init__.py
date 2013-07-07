@@ -6,4 +6,3 @@ def includeme(config):
     )
 
     config.include('notaliens.people.routes')
-    config.include('notaliens.people.search')

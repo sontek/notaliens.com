@@ -37,8 +37,9 @@ class SkillTag(Base, TranslatableMixin):
 
 class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = [
-        "description", "city", "state"
+        'description', 'city', 'state'
     ]
+    _json_eager_load = ['user']
 
     user_pk = Column(Integer, ForeignKey(User.pk))
     user = relationship(User, backref=backref('profile', uselist=False))

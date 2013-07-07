@@ -6,6 +6,7 @@ def setup_includes(config):
     config.include('notaliens.cache')
     config.include('notaliens.log')
     config.include('notaliens.core')
+    config.include('notaliens.search')
     config.include('notaliens.people', route_prefix='/people')
     config.include('notaliens.identity', route_prefix='/identity')
 

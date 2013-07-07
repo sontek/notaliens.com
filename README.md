@@ -46,3 +46,27 @@ Getting Started
 
     $ python bootstrap.py
     $ bin/buildout
+    $ bin/notaliens_create_db notaliens/development.ini
+
+
+We also have support for caching SQL queries via redis and using elasticsearch
+for full text search, so use your distro to install those if you would like
+to take advantage of those features.
+
+
+Elastic Search
+==================================
+To test the elastic search:
+
+Profile Schema:
+
+    curl -XGET 'http://127.0.0.1:9200/profiles/_mapping?pretty=1'
+
+All profiles:
+
+    curl -XGET 'http://127.0.0.1:9200/profiles/_search?pretty=1'
+
+
+Filter Profile:
+
+    curl -XGET 'http://127.0.0.1:9200/profiles/person/_search?q=first_name:john'

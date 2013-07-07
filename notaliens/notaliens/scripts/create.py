@@ -10,7 +10,7 @@ from sqlalchemy import engine_from_config
 from getpass import getpass
 
 from pyramid.paster import (
-    get_appsettings
+    bootstrap
     , setup_logging
 )
 
@@ -149,8 +149,12 @@ def generate_default_data(session):
         , one_liner=one_liner
     )
 
+    global_data['profiles'] = [profile]
+
     session.add(admin)
     session.add(profile)
+
+    return global_data
 
 def main(argv=sys.argv):
     if len(argv) != 2:
@@ -158,21 +162,30 @@ def main(argv=sys.argv):
 
     config_uri = argv[1]
     setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
+    env = bootstrap(config_uri)
+    settings = env['registry'].settings
+    request = env['request']
     engine = engine_from_config(settings, 'sqlalchemy.')
     db_session = scoped_session(sessionmaker())
     db_session.configure(bind=engine)
 
-    config = Configurator(settings=settings)
-    setup_includes(config)
-    config.scan('notaliens')
-
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
-    generate_default_data(db_session)
+    data = generate_default_data(db_session)
 
     db_session.commit()
+
+    if request.cache_settings['enabled']:
+        request.es.delete_index('profiles')
+
+        for profile in data['profiles']:
+            request.es.index(
+                'profiles'
+                , 'person'
+                , profile.__json__(request)
+                , id=profile.user.pk
+            )
 
 if __name__ == '__main__':
     main()
