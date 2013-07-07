@@ -18,6 +18,11 @@ from pyramid.config import Configurator
 
 from notaliens.core.models import Base
 
+try: 
+    input = raw_input
+except NameError:
+    pass
+
 here = os.path.dirname(__file__)
 
 def usage(argv):
