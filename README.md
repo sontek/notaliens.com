@@ -70,3 +70,15 @@ All profiles:
 Filter Profile:
 
     curl -XGET 'http://127.0.0.1:9200/profiles/person/_search?q=first_name:john'
+
+Or for more advanced querying:
+
+    curl -XPOST 'http://127.0.0.1:9200/profiles/person/_search?pretty=true' -d'
+    {
+        "query":{
+            "term" : {
+                "first_name" :"john"
+            }   
+        }
+    }
+    '
