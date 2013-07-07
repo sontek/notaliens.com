@@ -19,6 +19,7 @@ requires = [
     , 'pyramid_debugtoolbar'
     , 'pytz'
     , 'redis'
+    , 'six'
     , 'sqlalchemy'
     , 'validictory'
     , 'gunicorn'

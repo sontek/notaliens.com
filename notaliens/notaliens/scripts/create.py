@@ -17,6 +17,7 @@ from pyramid.paster import (
 from pyramid.config import Configurator
 
 from notaliens.core.models import Base
+from notaliens import setup_includes
 
 try: 
     input = raw_input
@@ -154,6 +155,7 @@ def generate_default_data(session):
 def main(argv=sys.argv):
     if len(argv) != 2:
         usage(argv)
+
     config_uri = argv[1]
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
@@ -161,8 +163,8 @@ def main(argv=sys.argv):
     db_session = scoped_session(sessionmaker())
     db_session.configure(bind=engine)
 
-    config = Configurator()
-
+    config = Configurator(settings=settings)
+    setup_includes(config)
     config.scan('notaliens')
 
     Base.metadata.drop_all(engine)

@@ -1,5 +1,6 @@
 from notaliens.core.models import Base
 from notaliens.core.models.translation import TranslatableMixin
+from notaliens.core.models import JsonSerializableMixin
 from notaliens.core.models.meta import Country
 from notaliens.core.models.meta import Language
 from notaliens.core.models.meta import Timezone
@@ -29,13 +30,12 @@ user_skills = Table('user_skills', Base.metadata,
     Column('skill_tag_pk', Integer, ForeignKey('skill_tag.pk'))
 )
 
-
 class SkillTag(Base, TranslatableMixin):
     __translatables__ = ["name"]
     name = Column(UnicodeText, nullable=False, unique=True)
 
 
-class UserProfile(Base, TranslatableMixin):
+class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = [
         "description", "city", "state"
     ]
