@@ -1,7 +1,32 @@
 <%inherit file="notaliens:core/templates/layout.mako"/>
-<ul>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>E-mail</th>
+      <th>Location</th>
+    </tr>
+  </thead>
 % for user in data['users']:
-<li><a href="${request.route_url('people_profile', username=user['username'])}">${display_name(user)}</a></li>
+  <tr>
+    <td>
+      <a href="${request.route_url('people_profile', username=user['username'])}">${display_name(user)}</a>
+    </td>
+    <td>
+      ${user['email']}
+    </td>
+    <td>
+      N/A
+    </td>
+  </tr>
 % endfor
-</ul>
-hi people
+</table>
+<div class="pagination">
+  <ul>
+    % for i in range(0, data['pages']):
+      <li ${'class=disabled' if data['current_page'] == i else ''}>
+        <a href="${request.route_url('people_index_paged', page=i)}" >${i+1}</a>
+      </li>
+    % endfor
+  </ul>
+</div>

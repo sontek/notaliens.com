@@ -96,7 +96,7 @@ def get_user_by_username(session, username, with_profile=True,
 
     return user
 
-def get_users(request, page=0, limit=10):
+def get_users(request, page=0, limit=50):
     """ This will get the users limited by `page` and `limit`.  It will
     return a dict of the total users and the limited paged results.
 

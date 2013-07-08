@@ -2,6 +2,8 @@ from pyramid.view import view_config
 from notaliens.people.models import get_user_by_username
 from notaliens.people.models import get_users
 
+import math
+
 @view_config(
     route_name='people_index'
     , renderer='notaliens:people/templates/index.mako'
@@ -11,10 +13,14 @@ from notaliens.people.models import get_users
     , renderer='notaliens:people/templates/index.mako'
 )
 def people_index(request):
-    page = request.matchdict.get('page', 0)
+    page = int(request.matchdict.get('page', 0))
+    max_rows = 10
+    data = get_users(request, page=page, limit=max_rows)
+    data['pages'] = math.ceil(data['count'] / max_rows)
+    data['current_page'] = page
 
     return {
-        'data': get_users(request, page=page)
+        'data': data
     }
 
 @view_config(
