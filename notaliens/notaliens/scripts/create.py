@@ -176,7 +176,7 @@ def main(argv=sys.argv):
 
     db_session.commit()
 
-    if request.cache_settings['enabled']:
+    if request.search_settings['enabled']:
         request.es.delete_index('profiles')
 
         for profile in data['profiles']:

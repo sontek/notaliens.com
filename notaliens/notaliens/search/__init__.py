@@ -30,9 +30,10 @@ def get_search_settings(request, prefix='search.'):
 
 
 def get_es_from_settings(request):
-    es = ElasticSearch('http://%(host)s:%(port)s/' % request.search_settings)
+    if request.search_settings['enabled']:
+        es = ElasticSearch('http://%(host)s:%(port)s/' % request.search_settings)
 
-    return es
+        return es
 
 
 def includeme(config):

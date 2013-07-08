@@ -1,3 +1,4 @@
+from pyramid.events import BeforeRender
 def includeme(config):
 
     config.override_asset(
@@ -6,3 +7,7 @@ def includeme(config):
     )
 
     config.include('notaliens.people.routes')
+    config.add_subscriber(
+        'notaliens.people.events.add_renderers',
+        BeforeRender
+    )

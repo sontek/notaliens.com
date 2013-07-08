@@ -12,6 +12,7 @@ from notaliens.log import perflog
 
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
+from sqlalchemy import func
 from sqlalchemy.types import UnicodeText
 from sqlalchemy.types import Unicode
 from sqlalchemy.types import Integer
@@ -19,6 +20,11 @@ from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import backref
 from sqlalchemy.orm import joinedload
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 user_languages = Table('user_languages', Base.metadata,
     Column('profile_pk', Integer, ForeignKey('user_profile.pk')),
@@ -39,10 +45,8 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = [
         'description', 'city', 'state'
     ]
-    _json_eager_load = ['user']
 
-    user_pk = Column(Integer, ForeignKey(User.pk))
-    user = relationship(User, backref=backref('profile', uselist=False))
+    user_pk = Column(Integer, ForeignKey('user.pk'))
     description = Column(UnicodeText, nullable=True)
     one_liner  = Column(Unicode(140), nullable=False)
     first_name = Column(Unicode(255), nullable=True)
@@ -92,18 +96,108 @@ def get_user_by_username(session, username, with_profile=True,
 
     return user
 
+def get_users(request, page=0, limit=50):
+    """ This will get the users limited by `page` and `limit`.  It will
+    return a dict of the total users and the limited paged results.
+
+    For example:
+
+        {
+            'count': 1,
+            'users': [ ... ] 
+        }
+    """
+
+    if request.search_settings['enabled']: 
+        results = get_users_from_es(request.es, page, limit)
+    else:
+        users = get_users_from_db(request.db_session, page, limit)
+        count = get_user_count_from_db(request.db_session)
+        serialized_users = [u.__json__(request) for u in users] 
+        logger.info("USERS %r" % serialized_users)
+
+        return {
+            'count': count,
+            'users': [u.__json__(request) for u in users]
+        }
+    
+
 @perflog()
-def get_all_users(session, with_profile=True, from_cache=True):
+def get_user_count_from_db(session):
+    query = session.query(func.count(User.pk))
+
+    results = query.one()
+
+    return results[0]
+
+@perflog()
+def get_users_from_db(session, page, limit, with_profile=True):
+    """ This queries the database for the user and his profile,
+    it will cache the query to redis if possible
+    """
 
     query = session.query(User)
+    query = query.options(joinedload('profile'))
+    query = query.options(FromCache())
+    query = query.options(RelationshipCache(User.profile))
 
-    if with_profile:
-        query = query.options(joinedload('profile'))
+    if limit:
+        query = query.limit(limit)
 
-    if from_cache: 
-        query = query.options(FromCache())
-        query = query.options(RelationshipCache(User.profile))
+    if page and limit:
+        offset = page * limit
+        query = query.offset(offset)
+
 
     users = query.all()
 
     return users
+
+@perflog()
+def get_users_from_es(es, page, limit):
+    query = {
+        'from': page,
+        'size': limit
+    }
+
+    results = es.search(query, index='profiles')
+
+    import pdb; pdb.set_trace()
+
+#{'_shards': {'failed': 0, 'successful': 5, 'total': 5},
+# 'hits': {'hits': [{'_id': '1',
+#                    '_index': 'profiles',
+#                    '_score': 1.0,
+#                    '_source': {'blog_rss': None,
+#                                'city': None,
+#                                'country_pk': None,
+#                                'date_created': '2013-07-07T22:42:45.557103',
+#                                'date_modified': None,
+#                                'description': None,
+#                                'first_name': 'John',
+#                                'github_handle': None,
+#                                'last_name': 'Anderson',
+#                                'one_liner': "I'm awesome",
+#                                'pk': 1,
+#                                'postal': None,
+#                                'state': None,
+#                                'timezone_pk': None,
+#                                'twitter_handle': None,
+#                                'user': {'activation_id': None,
+#                                         'date_created': '2013-07-07T22:42:45.557103',
+#                                         'date_modified': None,
+#                                         'email': 'sontek@gmail.com',
+#                                         'last_login_date': '2013-07-07T18:42:45.557103',
+#                                         'pk': 1,
+#                                         'registered_date': '2013-07-07T18:42:45.557103',
+#                                         'security_code': 'e31c124650fe',
+#                                         'status': None,
+#                                         'username': 'sontek'},
+#                                'user_pk': 1},
+#                    '_type': 'person'}],
+#          'max_score': 1.0,
+#          'total': 1},
+# 'timed_out': False,
+# 'took': 1}
+
+    return results

@@ -172,7 +172,12 @@ class JsonSerializableMixin(object):
                 if attr:
                     if all_properties[key].direction.name in many_directions:
                         # jsonify all child objects
-                        props[key] = [self.try_to_json(request, x) for x in attr]
+                        try:
+                            props[key] = [self.try_to_json(request, x) for x in attr]
+                        except TypeError:
+                            #TODO: This is hack because SQLALchemy is returning
+                            # ONETOMANY when it should be ONETOONE
+                            props[key] = self.try_to_json(request, attr)
                     else:
                         props[key] = self.try_to_json(request, attr)
 

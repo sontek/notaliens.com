@@ -1,6 +1,6 @@
 from pyramid.view import view_config
 from notaliens.people.models import get_user_by_username
-from notaliens.people.models import get_all_users
+from notaliens.people.models import get_users
 
 @view_config(
     route_name='people_index'
@@ -8,7 +8,7 @@ from notaliens.people.models import get_all_users
 )
 def people_index(request):
     return {
-        'users': get_all_users(request.db_session)
+        'data': get_users(request)
     }
 
 @view_config(
