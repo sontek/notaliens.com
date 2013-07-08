@@ -19,6 +19,7 @@ from notaliens.people.models import index_users
 from notaliens.people import USER_INDEX
 
 import pyelasticsearch
+import random
 
 try: 
     input = raw_input
@@ -150,10 +151,41 @@ def generate_default_data(session):
         , one_liner=one_liner
     )
 
-    global_data['users'] = [admin]
-
     session.add(admin)
     session.add(profile)
+
+    user_names = ['sontek', 'kober', 'housewifehacker', 'ketnos', 'rusty']
+
+    users = [admin]
+
+    for x in range(0, 22):
+        username = '%s%s' % ( random.choice(user_names), x)
+        user = User(
+            username=username
+            , email='%s@gmail.com' % (username)
+            , password='temp'
+        )
+
+        first_names = ['John', 'Robert', 'Ashley', 'Jessica', 'Alex', 'Greg',
+            'Morgan', 'Graham', 'Fred', 'Mike', 'Ted', 'Melissa']
+
+        last_names = ['Anderson', 'Smith', 'Henderson', 'Jones', 'Doe',
+            'Davis', 'White', 'Garcia']
+
+        profile = UserProfile(
+            user=user
+            , first_name=random.choice(first_names)
+            , last_name=random.choice(last_names)
+            , one_liner=''
+        )
+
+        users.append(user)
+
+        session.add(user)
+        session.add(profile)
+
+    global_data['users'] = users
+
 
     return global_data
 

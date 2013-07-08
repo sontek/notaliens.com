@@ -6,9 +6,15 @@ from notaliens.people.models import get_users
     route_name='people_index'
     , renderer='notaliens:people/templates/index.mako'
 )
+@view_config(
+    route_name='people_index_paged'
+    , renderer='notaliens:people/templates/index.mako'
+)
 def people_index(request):
+    page = request.matchdict.get('page', 0)
+
     return {
-        'data': get_users(request)
+        'data': get_users(request, page=page)
     }
 
 @view_config(

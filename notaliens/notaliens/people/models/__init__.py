@@ -96,7 +96,7 @@ def get_user_by_username(session, username, with_profile=True,
 
     return user
 
-def get_users(request, page=0, limit=50):
+def get_users(request, page=0, limit=10):
     """ This will get the users limited by `page` and `limit`.  It will
     return a dict of the total users and the limited paged results.
 
@@ -114,7 +114,6 @@ def get_users(request, page=0, limit=50):
     else:
         users = get_users_from_db(request.db_session, page, limit)
         count = get_user_count_from_db(request.db_session)
-        serialized_users = [u.__json__(request) for u in users] 
 
         return {
             'count': count,
@@ -171,42 +170,6 @@ def get_users_from_es(es, page, limit):
         'count': count,
         'users': users
     }
-{'_shards': {'failed': 0, 'successful': 5, 'total': 5},
- 'hits': {'hits': [{'_id': '1',
-                    '_index': 'users',
-                    '_score': 1.0,
-                    '_source': {'activation_id': None,
-                                'date_created': '2013-07-08T00:39:27.958382',
-                                'date_modified': None,
-                                'email': 'sontek@gmail.com',
-                                'last_login_date': '2013-07-07T20:39:27.958382',
-                                'pk': 1,
-                                'profile': {'blog_rss': None,
-                                            'city': None,
-                                            'country_pk': None,
-                                            'date_created': '2013-07-08T00:39:27.958382',
-                                            'date_modified': None,
-                                            'description': None,
-                                            'first_name': 'John',
-                                            'github_handle': None,
-                                            'last_name': 'Anderson',
-                                            'one_liner': "I'm awesome",
-                                            'pk': 1,
-                                            'postal': None,
-                                            'state': None,
-                                            'timezone_pk': None,
-                                            'twitter_handle': None,
-                                            'user_pk': 1},
-                                'registered_date': '2013-07-07T20:39:27.958382',
-                                'security_code': 'e875c3f7f0e2',
-                                'status': None,
-                                'username': 'sontek'},
-                    '_type': 'user'}],
-          'max_score': 1.0,
-          'total': 1},
- 'timed_out': False,
- 'took': 2}
-
 
 @perflog()
 def index_users(request, users):
