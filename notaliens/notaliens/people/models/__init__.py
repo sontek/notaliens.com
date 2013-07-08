@@ -20,6 +20,9 @@ from sqlalchemy.types import Integer
 from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_
+from sqlalchemy import and_
+
 
 import logging
 
@@ -113,7 +116,11 @@ def get_users(request, search_text=None, page=0, limit=50):
         return results
     else:
         users = get_users_from_db(request.db_session, page, limit, search_text)
-        count = get_user_count_from_db(request.db_session)
+
+        if search_text:
+            count = len(users)
+        else:
+            count = get_user_count_from_db(request.db_session)
 
         return {
             'count': count,
@@ -137,6 +144,21 @@ def get_users_from_db(session, page, limit, search_text=None):
 
     query = session.query(User)
     query = query.options(joinedload('profile'))
+
+    if search_text:
+        like_format = '%' + search_text + '%'
+        query = query.filter(
+            and_(
+                or_(
+                    User.username.like(like_format),
+                    User.email.like(like_format),
+                    UserProfile.first_name.like(like_format),
+                    UserProfile.last_name.like(like_format)
+                )
+                , UserProfile.user_pk == User.pk
+            )
+        )
+
     query = query.options(FromCache())
     query = query.options(RelationshipCache(User.profile))
 

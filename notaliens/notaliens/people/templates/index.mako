@@ -12,6 +12,7 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Username</th>
       <th>E-mail</th>
       <th>Location</th>
     </tr>
@@ -20,6 +21,9 @@
   <tr>
     <td>
       <a href="${request.route_url('people_profile', username=user['username'])}">${display_name(user)}</a>
+    </td>
+    <td>
+      ${user['username']}
     </td>
     <td>
       ${user['email']}
