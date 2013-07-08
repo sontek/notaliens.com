@@ -29,7 +29,7 @@ def people_index(request):
         , search_text=search_text
     )
 
-    data['pages'] = math.ceil(data['count'] / max_rows)
+    data['pages'] = int(math.ceil(data['count'] / max_rows))
     data['current_page'] = page
 
     if search_text:
