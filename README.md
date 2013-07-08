@@ -54,6 +54,12 @@ for full text search, so use your distro to install those if you would like
 to take advantage of those features.
 
 
+You will notice on the view timings that we are running at about 30-40ms per view,
+this is not an accurate number because we enable the debugtoolbar by default.
+
+With the toolbar off we average around 10-15ms per view request.
+
+
 Elastic Search
 ==================================
 To test the elastic search:
