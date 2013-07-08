@@ -4,13 +4,7 @@ from pyelasticsearch import ElasticSearch
 
 logger = logging.getLogger(__name__)
 
-def get_search_settings(request, prefix='search.'):
-    """
-    This will construct a dictionary of cache settings from an ini
-    file and convert them to their proper type (bool, int, etc)
-    """
-    settings = request.registry.settings
-
+def _get_search_settings(settings, prefix='search.'):
     options = dict(
         (key[len(prefix):], settings[key])
         for key in settings if key.startswith(prefix)
@@ -29,12 +23,19 @@ def get_search_settings(request, prefix='search.'):
     return options
 
 
-def get_es_from_settings(request):
-    if request.search_settings['enabled']:
-        es = ElasticSearch('http://%(host)s:%(port)s/' % request.search_settings)
+def get_search_settings(request, prefix='search.'):
+    """
+    This will construct a dictionary of cache settings from an ini
+    file and convert them to their proper type (bool, int, etc)
+    """
+    settings = request.registry.settings
 
-        return es
+    return _get_search_settings(settings, prefix)
 
+
+# we are making this global to take advantage of connection pooling
+# in pyelasticsearch
+_es_client = None
 
 def includeme(config):
     settings = config.registry.settings
@@ -43,12 +44,19 @@ def includeme(config):
     logger.info('elastic_search_enabled=%s' % search_enabled)
 
 
-    # Enable caching?
+    # Enable searching?
     if not search_enabled:
         config.add_request_method(
             lambda request: {'enabled': False}, 'search_settings', reify=True
         )
         return
+
+    search_settings = _get_search_settings(settings)
+
+    global _es_client
+
+    if _es_client is None:
+        _es_client = ElasticSearch('http://%(host)s:%(port)s/' % search_settings)
 
     config.add_request_method(
         get_search_settings,
@@ -57,7 +65,7 @@ def includeme(config):
     )
 
     config.add_request_method(
-        get_es_from_settings,
+        lambda request: _es_client,
         'es',
         reify=True
     )
