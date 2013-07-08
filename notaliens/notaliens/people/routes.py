@@ -2,8 +2,8 @@ from notaliens.people.security import UserFactory
 
 def includeme(config):
     config.add_route('people_index', '/')
-    config.add_route('people_index_paged', '/{page}')
-    config.add_route('people_profile', '/{username}')
+    config.add_route('people_index_paged', '/page/{page}')
+    config.add_route('people_profile', '/user/{username}')
 
 
     config.add_route(
