@@ -14,10 +14,11 @@ from pyramid.paster import (
     , setup_logging
 )
 
-from pyramid.config import Configurator
-
 from notaliens.core.models import Base
-from notaliens import setup_includes
+from notaliens.people.models import index_users
+from notaliens.people import USER_INDEX
+
+import pyelasticsearch
 
 try: 
     input = raw_input
@@ -149,7 +150,7 @@ def generate_default_data(session):
         , one_liner=one_liner
     )
 
-    global_data['profiles'] = [profile]
+    global_data['users'] = [admin]
 
     session.add(admin)
     session.add(profile)
@@ -177,15 +178,12 @@ def main(argv=sys.argv):
     db_session.commit()
 
     if request.search_settings['enabled']:
-        request.es.delete_index('profiles')
+        try:
+            request.es.delete_index(USER_INDEX)
+        except pyelasticsearch.exceptions.ElasticHttpNotFoundError:
+            pass
 
-        for profile in data['profiles']:
-            request.es.index(
-                'profiles'
-                , 'person'
-                , profile.__json__(request)
-                , id=profile.user.pk
-            )
+        index_users(request, data['users'])
 
 if __name__ == '__main__':
     main()

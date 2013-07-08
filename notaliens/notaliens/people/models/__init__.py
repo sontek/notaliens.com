@@ -4,6 +4,7 @@ from notaliens.core.models import JsonSerializableMixin
 from notaliens.core.models.meta import Country
 from notaliens.core.models.meta import Language
 from notaliens.core.models.meta import Timezone
+from notaliens.people import USER_INDEX
 from notaliens.identity.models import User
 from notaliens.cache.sa import FromCache
 from notaliens.cache.sa import RelationshipCache
@@ -18,7 +19,6 @@ from sqlalchemy.types import Unicode
 from sqlalchemy.types import Integer
 from sqlalchemy import Table
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import backref
 from sqlalchemy.orm import joinedload
 
 import logging
@@ -110,11 +110,11 @@ def get_users(request, page=0, limit=50):
 
     if request.search_settings['enabled']: 
         results = get_users_from_es(request.es, page, limit)
+        return results
     else:
         users = get_users_from_db(request.db_session, page, limit)
         count = get_user_count_from_db(request.db_session)
         serialized_users = [u.__json__(request) for u in users] 
-        logger.info("USERS %r" % serialized_users)
 
         return {
             'count': count,
@@ -160,44 +160,60 @@ def get_users_from_es(es, page, limit):
         'size': limit
     }
 
-    results = es.search(query, index='profiles')
+    results = es.search(query, index=USER_INDEX)
+    count = results['hits']['total']
+    users = []
 
-    import pdb; pdb.set_trace()
+    for hit in results['hits']['hits']: 
+        users.append(hit['_source'])
 
-#{'_shards': {'failed': 0, 'successful': 5, 'total': 5},
-# 'hits': {'hits': [{'_id': '1',
-#                    '_index': 'profiles',
-#                    '_score': 1.0,
-#                    '_source': {'blog_rss': None,
-#                                'city': None,
-#                                'country_pk': None,
-#                                'date_created': '2013-07-07T22:42:45.557103',
-#                                'date_modified': None,
-#                                'description': None,
-#                                'first_name': 'John',
-#                                'github_handle': None,
-#                                'last_name': 'Anderson',
-#                                'one_liner': "I'm awesome",
-#                                'pk': 1,
-#                                'postal': None,
-#                                'state': None,
-#                                'timezone_pk': None,
-#                                'twitter_handle': None,
-#                                'user': {'activation_id': None,
-#                                         'date_created': '2013-07-07T22:42:45.557103',
-#                                         'date_modified': None,
-#                                         'email': 'sontek@gmail.com',
-#                                         'last_login_date': '2013-07-07T18:42:45.557103',
-#                                         'pk': 1,
-#                                         'registered_date': '2013-07-07T18:42:45.557103',
-#                                         'security_code': 'e31c124650fe',
-#                                         'status': None,
-#                                         'username': 'sontek'},
-#                                'user_pk': 1},
-#                    '_type': 'person'}],
-#          'max_score': 1.0,
-#          'total': 1},
-# 'timed_out': False,
-# 'took': 1}
+    return {
+        'count': count,
+        'users': users
+    }
+{'_shards': {'failed': 0, 'successful': 5, 'total': 5},
+ 'hits': {'hits': [{'_id': '1',
+                    '_index': 'users',
+                    '_score': 1.0,
+                    '_source': {'activation_id': None,
+                                'date_created': '2013-07-08T00:39:27.958382',
+                                'date_modified': None,
+                                'email': 'sontek@gmail.com',
+                                'last_login_date': '2013-07-07T20:39:27.958382',
+                                'pk': 1,
+                                'profile': {'blog_rss': None,
+                                            'city': None,
+                                            'country_pk': None,
+                                            'date_created': '2013-07-08T00:39:27.958382',
+                                            'date_modified': None,
+                                            'description': None,
+                                            'first_name': 'John',
+                                            'github_handle': None,
+                                            'last_name': 'Anderson',
+                                            'one_liner': "I'm awesome",
+                                            'pk': 1,
+                                            'postal': None,
+                                            'state': None,
+                                            'timezone_pk': None,
+                                            'twitter_handle': None,
+                                            'user_pk': 1},
+                                'registered_date': '2013-07-07T20:39:27.958382',
+                                'security_code': 'e875c3f7f0e2',
+                                'status': None,
+                                'username': 'sontek'},
+                    '_type': 'user'}],
+          'max_score': 1.0,
+          'total': 1},
+ 'timed_out': False,
+ 'took': 2}
 
-    return results
+
+@perflog()
+def index_users(request, users):
+    for user in users:
+        request.es.index(
+            USER_INDEX
+            , 'user'
+            , user.__json__(request)
+            , id=user.pk
+        )
