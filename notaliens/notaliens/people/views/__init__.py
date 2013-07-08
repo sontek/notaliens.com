@@ -13,11 +13,27 @@ import math
     , renderer='notaliens:people/templates/index.mako'
 )
 def people_index(request):
-    page = int(request.matchdict.get('page', 0))
     max_rows = 10
-    data = get_users(request, page=page, limit=max_rows)
+    page = 0
+    search_text = None
+
+    if request.method == 'GET':
+        page = int(request.matchdict.get('page', page))
+    elif request.method == 'POST':
+        search_text = request.POST['search'].strip()
+
+    data = get_users(
+        request
+        , page=page
+        , limit=max_rows
+        , search_text=search_text
+    )
+
     data['pages'] = math.ceil(data['count'] / max_rows)
     data['current_page'] = page
+
+    if search_text:
+        data['search_text'] = search_text
 
     return {
         'data': data

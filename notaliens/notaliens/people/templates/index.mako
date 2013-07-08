@@ -1,4 +1,13 @@
 <%inherit file="notaliens:core/templates/layout.mako"/>
+<form class="form-search pull-right" method="POST">
+  % if 'search_text' in data:
+      <input type="text" class="input-medium search-query" name="search" value="${data['search_text']}">
+  % else:
+      <input type="text" class="input-medium search-query" name="search">
+  % endif
+  <button type="submit" class="btn">Search</button>
+</form>
+
 <table class="table table-striped">
   <thead>
     <tr>

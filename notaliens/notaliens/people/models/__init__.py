@@ -96,7 +96,7 @@ def get_user_by_username(session, username, with_profile=True,
 
     return user
 
-def get_users(request, page=0, limit=50):
+def get_users(request, search_text=None, page=0, limit=50):
     """ This will get the users limited by `page` and `limit`.  It will
     return a dict of the total users and the limited paged results.
 
@@ -109,10 +109,10 @@ def get_users(request, page=0, limit=50):
     """
 
     if request.search_settings['enabled']: 
-        results = get_users_from_es(request.es, page, limit)
+        results = get_users_from_es(request.es, page, limit, search_text)
         return results
     else:
-        users = get_users_from_db(request.db_session, page, limit)
+        users = get_users_from_db(request.db_session, page, limit, search_text)
         count = get_user_count_from_db(request.db_session)
 
         return {
@@ -130,7 +130,7 @@ def get_user_count_from_db(session):
     return results[0]
 
 @perflog()
-def get_users_from_db(session, page, limit, with_profile=True):
+def get_users_from_db(session, page, limit, search_text=None):
     """ This queries the database for the user and his profile,
     it will cache the query to redis if possible
     """
@@ -153,11 +153,20 @@ def get_users_from_db(session, page, limit, with_profile=True):
     return users
 
 @perflog()
-def get_users_from_es(es, page, limit):
+def get_users_from_es(es, page, limit, search_text=None):
     query = {
         'from': page,
         'size': limit
     }
+
+    if search_text:
+        search_text = search_text.lower()
+        query['query'] = {
+            'multi_match': {
+                'query': search_text
+                , 'fields': ['first_name', 'email']
+            }
+        }
 
     results = es.search(query, index=USER_INDEX)
     count = results['hits']['total']
