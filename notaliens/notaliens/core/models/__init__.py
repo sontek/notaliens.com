@@ -155,8 +155,9 @@ class JsonSerializableMixin(object):
             # get the class property value
             attr = getattr(self, key)
 
-            # convert all non integer strings to unicode or if UnicodeDecodeError
-            # conversion is not possible, convert it to a byte string.
+            # convert all non integer strings to unicode or if
+            # UnicodeDecodeError conversion is not possible, convert it to a
+            # byte string.
             if attr and not isinstance(attr, (int, float)):
                 try:
                     props[key] = text_type(attr)

@@ -11,7 +11,8 @@ def test_perflog_on_function():
             return 'ret'
 
         def info(format_str, data):
-            assert format_str == 'ms=%(chrono)d func=%(module)s.%(func)s(%(args)s)'
+            compare_str = 'ms=%(chrono)d func=%(module)s.%(func)s(%(args)s)'
+            assert format_str == compare_str
             assert data['module'] == 'test_decorator'
             assert data['func'] == 'some_silly_func'
             assert data['args'] == "'bar', kwarg='some_kwarg'"
@@ -35,7 +36,8 @@ def test_perflog_on_method():
                 return 'ret'
 
         def info(format_str, data):
-            assert format_str == 'ms=%(chrono)d func=%(module)s.%(class)s.%(func)s(%(args)s)'
+            fmt = 'ms=%(chrono)d func=%(module)s.%(class)s.%(func)s(%(args)s)'
+            assert format_str == fmt
             assert data['module'] == 'test_decorator'
             assert data['func'] == 'some_silly_method'
             assert data['args'].startswith("<test_decorator.")
