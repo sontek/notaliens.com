@@ -4,13 +4,14 @@ from notaliens.people.models import get_users
 
 import math
 
+
 @view_config(
-    route_name='people_index'
-    , renderer='notaliens:people/templates/index.mako'
+    route_name='people_index',
+    renderer='notaliens:people/templates/index.mako'
 )
 @view_config(
-    route_name='people_index_paged'
-    , renderer='notaliens:people/templates/index.mako'
+    route_name='people_index_paged',
+    renderer='notaliens:people/templates/index.mako'
 )
 def people_index(request):
     max_rows = 10
@@ -23,10 +24,10 @@ def people_index(request):
         search_text = request.POST['search'].strip()
 
     data = get_users(
-        request
-        , page=page
-        , limit=max_rows
-        , search_text=search_text
+        request,
+        page=page,
+        limit=max_rows,
+        search_text=search_text
     )
 
     data['pages'] = int(math.ceil(data['count'] / max_rows))
@@ -39,9 +40,10 @@ def people_index(request):
         'data': data
     }
 
+
 @view_config(
-    route_name='people_profile'
-    , renderer='notaliens:people/templates/profile.mako'
+    route_name='people_profile',
+    renderer='notaliens:people/templates/profile.mako'
 )
 def people_profile_view(request):
     user = get_user_by_username(
