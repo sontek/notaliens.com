@@ -29,15 +29,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-user_languages = Table('user_languages', Base.metadata,
+user_languages = Table(
+    'user_languages',
+    Base.metadata,
     Column('profile_pk', Integer, ForeignKey('user_profile.pk')),
     Column('language_pk', Integer, ForeignKey(Language.pk))
 )
 
-user_skills = Table('user_skills', Base.metadata,
+user_skills = Table(
+    'user_skills',
+    Base.metadata,
     Column('profile_pk', Integer, ForeignKey('user_profile.pk')),
     Column('skill_tag_pk', Integer, ForeignKey('skill_tag.pk'))
 )
+
 
 class SkillTag(Base, TranslatableMixin):
     __translatables__ = ["name"]
@@ -51,7 +56,7 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
 
     user_pk = Column(Integer, ForeignKey('user.pk'))
     description = Column(UnicodeText, nullable=True)
-    one_liner  = Column(Unicode(140), nullable=False)
+    one_liner = Column(Unicode(140), nullable=False)
     first_name = Column(Unicode(255), nullable=True)
     last_name = Column(Unicode(255), nullable=True)
     blog_rss = Column(Unicode(255), nullable=True)
@@ -81,8 +86,9 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
 
 
 @perflog()
-def get_user_by_username(session, username, with_profile=True,
-        from_cache=True):
+def get_user_by_username(
+        session, username, with_profile=True, from_cache=True
+):
 
     query = session.query(User).filter(
         User.username == username
@@ -91,13 +97,14 @@ def get_user_by_username(session, username, with_profile=True,
     if with_profile:
         query = query.options(joinedload('profile'))
 
-    if from_cache: 
+    if from_cache:
         query = query.options(FromCache())
         query = query.options(RelationshipCache(User.profile))
 
     user = query.one()
 
     return user
+
 
 def get_users(request, search_text=None, page=0, limit=50):
     """ This will get the users limited by `page` and `limit`.  It will
@@ -107,7 +114,7 @@ def get_users(request, search_text=None, page=0, limit=50):
 
         {
             'count': 1,
-            'users': [ ... ] 
+            'users': [ ... ]
         }
     """
 
@@ -124,7 +131,7 @@ def get_users(request, search_text=None, page=0, limit=50):
             'users': [u.__json__(request) for u in users]
         }
 
-    if request.search_settings['enabled']: 
+    if request.search_settings['enabled']:
         results = get_users_from_es(
             request.es,
             page,
@@ -134,7 +141,7 @@ def get_users(request, search_text=None, page=0, limit=50):
         return results
     else:
         return db_wrapper()
-    
+
 
 @perflog()
 def get_user_count_from_db(session):
@@ -143,6 +150,7 @@ def get_user_count_from_db(session):
     results = query.one()
 
     return results[0]
+
 
 @perflog()
 def get_users_from_db(session, page, limit, search_text=None):
@@ -162,8 +170,8 @@ def get_users_from_db(session, page, limit, search_text=None):
                     User.email.like(like_format),
                     UserProfile.first_name.like(like_format),
                     UserProfile.last_name.like(like_format)
-                )
-                , UserProfile.user_pk == User.pk
+                ),
+                UserProfile.user_pk == User.pk
             )
         )
 
@@ -177,10 +185,10 @@ def get_users_from_db(session, page, limit, search_text=None):
         offset = page * limit
         query = query.offset(offset)
 
-
     users = query.all()
 
     return users
+
 
 @perflog()
 def get_users_from_es(es, page, limit, fallback=None, search_text=None):
@@ -193,8 +201,8 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None):
         search_text = search_text.lower()
         query['query'] = {
             'multi_match': {
-                'query': search_text
-                , 'fields': ['first_name', 'email']
+                'query': search_text,
+                'fields': ['first_name', 'email']
             }
         }
 
@@ -204,7 +212,7 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None):
         count = results['hits']['total']
         users = []
 
-        for hit in results['hits']['hits']: 
+        for hit in results['hits']['hits']:
             users.append(hit['_source'])
 
         return {
@@ -215,12 +223,13 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None):
     else:
         return results
 
+
 @perflog()
 def index_users(request, users):
     for user in users:
         request.es.create_index(
-            USER_INDEX
-            , 'user'
-            , user.__json__(request)
-            , id=user.pk
+            USER_INDEX,
+            'user',
+            user.__json__(request),
+            id=user.pk
         )
