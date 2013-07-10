@@ -111,10 +111,7 @@ def get_users(request, search_text=None, page=0, limit=50):
         }
     """
 
-    if request.search_settings['enabled']: 
-        results = get_users_from_es(request.es, page, limit, search_text)
-        return results
-    else:
+    def db_wrapper(*args, **kwargs):
         users = get_users_from_db(request.db_session, page, limit, search_text)
 
         if search_text:
@@ -126,6 +123,17 @@ def get_users(request, search_text=None, page=0, limit=50):
             'count': count,
             'users': [u.__json__(request) for u in users]
         }
+
+    if request.search_settings['enabled']: 
+        results = get_users_from_es(
+            request.es,
+            page,
+            limit,
+            fallback=db_wrapper,
+            search_text=search_text)
+        return results
+    else:
+        return db_wrapper()
     
 
 @perflog()
@@ -175,7 +183,7 @@ def get_users_from_db(session, page, limit, search_text=None):
     return users
 
 @perflog()
-def get_users_from_es(es, page, limit, search_text=None):
+def get_users_from_es(es, page, limit, fallback=None, search_text=None):
     query = {
         'from': page,
         'size': limit
@@ -190,22 +198,27 @@ def get_users_from_es(es, page, limit, search_text=None):
             }
         }
 
-    results = es.search(query, index=USER_INDEX)
-    count = results['hits']['total']
-    users = []
+    results = es.search(query, fallback=fallback, index=USER_INDEX)
+    # we got our data from elastic search
+    if 'hits' in results:
+        count = results['hits']['total']
+        users = []
 
-    for hit in results['hits']['hits']: 
-        users.append(hit['_source'])
+        for hit in results['hits']['hits']: 
+            users.append(hit['_source'])
 
-    return {
-        'count': count,
-        'users': users
-    }
+        return {
+            'count': count,
+            'users': users
+        }
+
+    else:
+        return results
 
 @perflog()
 def index_users(request, users):
     for user in users:
-        request.es.index(
+        request.es.create_index(
             USER_INDEX
             , 'user'
             , user.__json__(request)
