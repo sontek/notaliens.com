@@ -27,14 +27,14 @@ class CachingQuery(Query):
     """A Query subclass which optionally loads full results from a dogpile
     cache region.
 
-    The CachingQuery optionally stores additional state that allows it to consult
-    a dogpile.cache cache before accessing the database, in the form
+    The CachingQuery optionally stores additional state that allows it to
+    consult a dogpile.cache cache before accessing the database, in the form
     of a FromCache or RelationshipCache object.   Each of these objects
-    refer to the name of a :class:`dogpile.cache.Region` that's been configured
-    and stored in a lookup dictionary.  When such an object has associated
-    itself with the CachingQuery, the corresponding :class:`dogpile.cache.Region`
-    is used to locate a cached result.  If none is present, then the
-    Query is invoked normally, the results being cached.
+    refer to the name of a :class:`dogpile.cache.Region` that's been
+    configured and stored in a lookup dictionary.  When such an object has
+    associated itself with the CachingQuery, the corresponding
+    :class:`dogpile.cache.Region` is used to locate a cached result.  If none
+    is present, then the Query is invoked normally, the results being cached.
 
     The FromCache and RelationshipCache mapper options below represent
     the "public" method of configuring this state upon the CachingQuery.
@@ -60,7 +60,9 @@ class CachingQuery(Query):
 
         """
         if hasattr(self, '_cache_region'):
-            return self.get_value(createfunc=lambda: list(Query.__iter__(self)))
+            return self.get_value(
+                createfunc=lambda: list(Query.__iter__(self))
+            )
         else:
             return Query.__iter__(self)
 
@@ -81,7 +83,7 @@ class CachingQuery(Query):
         dogpile_region.delete(cache_key)
 
     def get_value(self, merge=True, createfunc=None,
-                    expiration_time=None, ignore_expiration=False):
+                  expiration_time=None, ignore_expiration=False):
         """Return the value from the cache for this query.
 
         Raise KeyError if no value present and no
@@ -95,18 +97,20 @@ class CachingQuery(Query):
         # with createfunc, which says, if the value is expired, generate
         # a new value.
         assert not ignore_expiration or not createfunc, \
-                "Can't ignore expiration and also provide createfunc"
+            "Can't ignore expiration and also provide createfunc"
 
         if ignore_expiration or not createfunc:
-            cached_value = dogpile_region.get(cache_key,
-                                expiration_time=expiration_time,
-                                ignore_expiration=ignore_expiration)
+            cached_value = dogpile_region.get(
+                cache_key,
+                expiration_time=expiration_time,
+                ignore_expiration=ignore_expiration
+            )
         else:
             cached_value = dogpile_region.get_or_create(
-                                    cache_key,
-                                    createfunc,
-                                    expiration_time=expiration_time
-                                )
+                cache_key,
+                createfunc,
+                expiration_time=expiration_time
+            )
         if cached_value is NO_VALUE:
             raise KeyError(cache_key)
         if merge:
@@ -146,8 +150,9 @@ def _key_from_query(query, qualifier=None):
     # here we return the key as a long string.  our "key mangler"
     # set up with the region will boil it down to an md5.
     return " ".join(
-                    [str(compiled)] +
-                    [str(params[k]) for k in sorted(params)])
+        [str(compiled)] +
+        [str(params[k]) for k in sorted(params)]
+    )
 
 
 class FromCache(MapperOption):
@@ -216,8 +221,8 @@ class RelationshipCache(MapperOption):
 
             for cls in mapper.class_.__mro__:
                 if (cls, key) in self._relationship_options:
-                    relationship_option = self._relationship_options[(cls, key)]
-                    query._cache_region = relationship_option
+                    rel_option = self._relationship_options[(cls, key)]
+                    query._cache_region = rel_option
                     break
 
     def and_(self, option):
