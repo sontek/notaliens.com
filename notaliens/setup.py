@@ -55,5 +55,6 @@ setup(
 
     [console_scripts]
     notaliens_create_db = notaliens.scripts.create:main
+    notaliens_update_geoip = notaliens.scripts.geoip:update
     """
 )
