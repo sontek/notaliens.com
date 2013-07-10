@@ -16,6 +16,7 @@ requires = [
     'psycopg2',
     'pycountry',
     'pyelasticsearch',
+    'pygeoip',
     'pyramid>=1.4.2',
     'pyramid_debugtoolbar',
     'pyramid_mailer',
@@ -54,5 +55,6 @@ setup(
 
     [console_scripts]
     notaliens_create_db = notaliens.scripts.create:main
+    notaliens_update_geoip = notaliens.scripts.geoip:update
     """
 )
