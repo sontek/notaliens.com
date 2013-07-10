@@ -58,3 +58,5 @@ chromedriver.log
 src/
 
 *.sqlite
+
+GeoIPCity.dat
