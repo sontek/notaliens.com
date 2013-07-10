@@ -56,17 +56,21 @@ Before running buildout, you need to make sure you have postgresql installed.
     $ initdb
     $ exit
     $ sudo systemctl start postgresql.service
+
+## Ubuntu
+
+    $ sudo apt-get install postgresql postgresql-dev
+    $ sudo su - postgres
+    $ initdb
+    $ exit
+    
+
+## Finally
+
     $ sudo su - postgres
     $ createuser -s <your user name>
     $ exit
     $ createdb notaliens
-
-## Ubuntu
-
-    TBD
-
-## Finally
-
     $ bin/buildout
     $ bin/notaliens_create_db notaliens/development.ini
     $ bin/notaliens_update_geoip notaliens/development.ini
