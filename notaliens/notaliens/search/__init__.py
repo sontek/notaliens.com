@@ -2,6 +2,8 @@ import logging
 from pyramid.settings import asbool
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import InvalidJsonResponseError
+from requests.exceptions import ConnectionError
+
 
 logger = logging.getLogger(__name__)
 
@@ -12,26 +14,25 @@ class SafeEs(object):
     def create_index(self, index, descriptor, body, **kwargs):
         try:
             self.es.index(index, descriptor, body, **kwargs)
-        except InvalidJsonResponseError:
+        except (InvalidJsonResponseError, ConnectionError):
             logger.exception("Couldn't index data to ElasticSearch")
 
     def delete_index(self, index):
         try:
             self.es.delete_index(index)
-        except InvalidJsonResponseError:
+        except (InvalidJsonResponseError, ConnectionError):
             logger.exception("Couldn't delete index from ElasticSearch")
 
     def search(self, query, fallback=None, **kwargs):
         try:
             return self.es.search(query, **kwargs)
-        except InvalidJsonResponseError:
+        except (InvalidJsonResponseError, ConnectionError):
             if fallback:
                 logger.exception("Couldn't search from ElasticSearch")
                 return fallback(query, **kwargs)
             else:
                 logger.warn("No fallback registered")
                 raise
-
 
 
 def _get_search_settings(settings, prefix='search.'):
