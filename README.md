@@ -43,7 +43,7 @@ released version.  What spoken language it is in.
 
 Getting Started
 ==================================
-
+    $ easy_install -U setuptools
     $ python bootstrap.py
     $ bin/buildout
     $ bin/notaliens_create_db notaliens/development.ini
