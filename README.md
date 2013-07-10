@@ -49,7 +49,7 @@ Getting Started
 
 Before running buildout, you need to make sure you have postgresql installed.
 
-# Fedora
+## Fedora
 
     $ sudo yum install postgresql-server postgresql-devel
     $ sudo su - postgres
@@ -61,11 +61,11 @@ Before running buildout, you need to make sure you have postgresql installed.
     $ exit
     $ createdb notaliens
 
-# Ubuntu
+## Ubuntu
 
     TBD
 
-# Finally
+## Finally
 
     $ bin/buildout
     $ bin/notaliens_create_db notaliens/development.ini
