@@ -23,20 +23,23 @@ DBSession = scoped_session(
     sessionmaker(query_cls=query_callable(regions))
 )
 
+
 class UTCNow(expression.FunctionElement):
     type = sa.DateTime()
+
 
 @compiles(UTCNow, 'postgresql')
 def pg_utcnow(element, compiler, **kw):
     return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
+
 
 class BaseModel(object):
     """Base class which auto-generates tablename, and surrogate
     primary key column.
     """
     __table_args__ = {
-        'mysql_engine': 'InnoDB'
-        , 'mysql_charset': 'utf8'
+        'mysql_engine': 'InnoDB',
+        'mysql_charset': 'utf8'
     }
 
     @declared_attr
@@ -48,13 +51,13 @@ class BaseModel(object):
 
     @declared_attr
     def __tablename__(cls):
-        """Convert CamelCase class name to underscores_between_words 
+        """Convert CamelCase class name to underscores_between_words
         table name."""
         name = cls.__name__.replace('Mixin', '')
 
         return (
-            name[0].lower() + 
-            re.sub(r'([A-Z])', lambda m:"_" + m.group(0).lower(), name[1:])
+            name[0].lower() +
+            re.sub(r'([A-Z])', lambda m: "_" + m.group(0).lower(), name[1:])
         )
 
     @declared_attr
@@ -64,6 +67,7 @@ class BaseModel(object):
     @declared_attr
     def date_modified(self):
         return sa.Column(sa.DateTime, onupdate=datetime.utcnow)
+
 
 class JsonSerializableMixin(object):
     """
@@ -81,10 +85,13 @@ class JsonSerializableMixin(object):
         blacklist list of which properties not to include in JSON
     """
 
-    _base_blacklist = ['password', '_json_eager_load', '_request',
-        '_base_blacklist', '_json_blacklist'
+    _base_blacklist = [
+        'password',
+        '_json_eager_load',
+        '_request',
+        '_base_blacklist',
+        '_json_blacklist'
     ]
-
 
     def __json__(self, request):
         """
@@ -148,8 +155,8 @@ class JsonSerializableMixin(object):
             # get the class property value
             attr = getattr(self, key)
 
-            # convert all non integer strings to unicode or if unicode conversion
-            # is not possible, convert it to a byte string.
+            # convert all non integer strings to unicode or if UnicodeDecodeError
+            # conversion is not possible, convert it to a byte string.
             if attr and not isinstance(attr, (int, float)):
                 try:
                     props[key] = text_type(attr)
@@ -173,7 +180,9 @@ class JsonSerializableMixin(object):
                     if all_properties[key].direction.name in many_directions:
                         # jsonify all child objects
                         try:
-                            props[key] = [self.try_to_json(request, x) for x in attr]
+                            props[key] = [
+                                self.try_to_json(request, x) for x in attr
+                            ]
                         except TypeError:
                             #TODO: This is hack because SQLALchemy is returning
                             # ONETOMANY when it should be ONETOONE
