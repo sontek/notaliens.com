@@ -88,7 +88,7 @@ class SafeCacheRegion(CacheRegion):
             return True
 
         return False
-    
+
 
 def md5_key_mangler(key):
     """Receive cache keys as long concatenated strings;
@@ -104,8 +104,8 @@ cache_region = SafeCacheRegion()
 sql_cache_region = SafeCacheRegion(key_mangler=md5_key_mangler)
 
 regions = {
-    "default": cache_region
-    , "sql": sql_cache_region
+    "default": cache_region,
+    "sql": sql_cache_region
 }
 
 
@@ -145,8 +145,10 @@ def invalidate_group(group_key):
         cache_region.set(group_key, str(uuid4()))
 
 
-def cacheable(cache_group=None, namespace=None, expiration_time=None,
-        should_cache_fn=None):
+def cacheable(
+    cache_group=None, namespace=None, expiration_time=None,
+    should_cache_fn=None
+):
     """
     Return the decorated function's cached data. If the function's data is not
     cached, cache it after having called the decorated function.
@@ -180,8 +182,10 @@ def cacheable(cache_group=None, namespace=None, expiration_time=None,
             else:
                 cgroup = None
 
-            timeout = expiration_time() if expiration_time_is_callable \
-                                        else expiration_time
+            if expiration_time_is_callable:
+                timeout = expiration_time()
+            else:
+                timeout = expiration_time
 
             args_keys = json.dumps(
                 args[args_slice],
@@ -239,19 +243,19 @@ def cacheable(cache_group=None, namespace=None, expiration_time=None,
                 # we want to set group key after the func_key cache
                 # so that the group key will be expired AFTER the func_key
                 output = cache_region.get_or_create(
-                    func_key
-                    , call_function
-                    , timeout
-                    , should_cache_fn
+                    func_key,
+                    call_function,
+                    timeout,
+                    should_cache_fn
                 )
 
                 cache_region.set(cache_group, group_key_value)
             else:
                 output = cache_region.get_or_create(
-                    func_key
-                    , call_function
-                    , timeout
-                    , should_cache_fn
+                    func_key,
+                    call_function,
+                    timeout,
+                    should_cache_fn
                 )
 
             return output
@@ -269,7 +273,6 @@ def includeme(config):
 
     cache_enabled = asbool(settings.get('cache.enabled', False))
     logger.info('dogpile_cache_enabled=%s' % cache_enabled)
-
 
     # Enable caching?
     if not cache_enabled:
