@@ -10,21 +10,21 @@ requires = [
     'colorama',
     'deform_bootstrap',
     'dogpile.cache',
+    'gunicorn',
     'horus',
     'mako',
     'psycopg2',
     'pycountry',
     'pyelasticsearch',
-    'pyramid_mailer',
     'pyramid>=1.4.2',
     'pyramid_debugtoolbar',
+    'pyramid_mailer',
     'pytz',
     'redis',
     'requests',
     'six',
     'sqlalchemy',
-    'validictory',
-    'gunicorn'
+    'validictory'
 ]
 
 setup(
