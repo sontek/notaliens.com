@@ -7,6 +7,7 @@ from requests.exceptions import ConnectionError
 
 logger = logging.getLogger(__name__)
 
+
 class SafeEs(object):
     def __init__(self, es):
         self.es = es
@@ -68,12 +69,12 @@ def get_search_settings(request, prefix='search.'):
 # in pyelasticsearch
 _es_client = None
 
+
 def includeme(config):
     settings = config.registry.settings
 
     search_enabled = asbool(settings.get('search.enabled', False))
     logger.info('elastic_search_enabled=%s' % search_enabled)
-
 
     # Enable searching?
     if not search_enabled:
@@ -87,7 +88,9 @@ def includeme(config):
     global _es_client
 
     if _es_client is None:
-        _es_client = ElasticSearch('http://%(host)s:%(port)s/' % search_settings)
+        _es_client = ElasticSearch(
+            'http://%(host)s:%(port)s/' % search_settings
+        )
 
     config.add_request_method(
         get_search_settings,
