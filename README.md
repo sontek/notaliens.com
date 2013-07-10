@@ -69,6 +69,7 @@ Before running buildout, you need to make sure you have postgresql installed.
 
     $ bin/buildout
     $ bin/notaliens_create_db notaliens/development.ini
+    $ bin/notaliens_update_geoip notaliens/development.ini
 
 
 We also have support for caching SQL queries via redis and using elasticsearch
