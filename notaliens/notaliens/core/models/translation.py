@@ -49,8 +49,9 @@ class Translation(Base):
 
     def __repr__(self):
         return '<Translation: type:"%s",field "%s", lang:%s>' % (
-                                                            self.parent_type,
-                                                            self.field,
-                                                            self.language)
+            self.parent_type,
+            self.field,
+            self.language
+        )
 
 __all__ = ["Translation", "TranslatableMixin"]

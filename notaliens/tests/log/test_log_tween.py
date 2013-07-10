@@ -7,7 +7,8 @@ from webtest import TestApp
 
 
 def test_log_tween_include():
-    # This tests automatic instrumentation of Pyramid views, using the NewEvent subscriber
+    # This tests automatic instrumentation of Pyramid views, using the
+    # NewEvent subscriber
 
     with mock.patch('notaliens.log.logger') as mock_logger:
         def view_func(request):
@@ -18,8 +19,8 @@ def test_log_tween_include():
                 },
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')
@@ -51,7 +52,8 @@ def test_log_tween_include():
 
 
 def test_log_tween_include_with_comma_separator():
-    # This tests automatic instrumentation of Pyramid views, using the NewEvent subscriber
+    # This tests automatic instrumentation of Pyramid views, using the
+    # NewEvent subscriber
 
     with mock.patch('notaliens.log.logger') as mock_logger:
         def view_func(request):
@@ -62,8 +64,8 @@ def test_log_tween_include_with_comma_separator():
                 },
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')
@@ -81,7 +83,8 @@ def test_log_tween_include_with_comma_separator():
 
 
 def test_perflog_tween_include_w_extra_logging():
-    # This tests adding additional context to be logged by the NewEvent subscriber
+    # This tests adding additional context to be logged by the NewEvent
+    # subscriber
 
     with mock.patch('notaliens.log.logger') as mock_logger:
         def view_func(request):
@@ -92,8 +95,8 @@ def test_perflog_tween_include_w_extra_logging():
                 },
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')
@@ -106,7 +109,15 @@ def test_perflog_tween_include_w_extra_logging():
         app = TestApp(app)
 
         def info(log_template, template_params):
-            assert log_template == 'ms=%(ms)s view=%(view)s body=%(body)s method=%(method)s url=%(url)s user-agent=%(user-agent)s'
+            log_format = '%s %s %s %s %s' % (
+                'ms=%(ms)s',
+                'view=%(view)s',
+                'body=%(body)s',
+                'method=%(method)s',
+                'url=%(url)s',
+                'user-agent=%(user-agent)s'
+            )
+            assert log_template == log_format
 
             assert 'ms' in template_params
             assert 'view' in template_params
@@ -133,7 +144,8 @@ def dummy_logging(request):
 
 
 def test_perflog_tween_automatic_extra_logging_dotted_path():
-    # This tests adding additional context to be logged by the NewEvent subscriber
+    # This tests adding additional context to be logged by the NewEvent
+    # subscriber
 
     with mock.patch('notaliens.log.logger') as mock_logger:
         def view_func(request):
@@ -144,8 +156,8 @@ def test_perflog_tween_automatic_extra_logging_dotted_path():
                 },
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')
@@ -184,8 +196,8 @@ def test_perflog_tween_automatic_extra_logging_one_argument():
                 'data': {'output_key': 'output_val'},
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')
@@ -255,8 +267,8 @@ def test_colorize_via_config():
                 },
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.registry.settings['notaliens.log.color'] = 'true'
         config.add_route('view', '/view')
@@ -300,8 +312,8 @@ def test_inject_request_id():
                 },
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')
@@ -311,11 +323,12 @@ def test_inject_request_id():
 
         def info(log_template, template_params):
             import threading
-            thread_name = threading.current_thread().name
-            assert thread_name.startswith('MainThread][request=')
             import re
+            thread_name = threading.current_thread().name
+
+            assert thread_name.startswith('MainThread][request=')
             assert re.search(
-                r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+                r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",  # nopep8
                 thread_name
             )
 
@@ -325,7 +338,8 @@ def test_inject_request_id():
 
 
 def test_log_static_view():
-    # This tests automatic instrumentation of Pyramid views, using the NewEvent subscriber
+    # This tests automatic instrumentation of Pyramid views, using the
+    # NewEvent subscriber
 
     with mock.patch('notaliens.log.logger') as mock_logger:
         def view_func(request):
@@ -336,8 +350,8 @@ def test_log_static_view():
                 },
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.registry.settings['notaliens.log.log_static'] = True
         config.include('notaliens.log')
@@ -369,8 +383,8 @@ def test_perflog_view_dictionary_extra_logging():
                 'data': {'output_key': 'output_val'},
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')
@@ -380,7 +394,8 @@ def test_perflog_view_dictionary_extra_logging():
         app = TestApp(app)
 
         def info(log_template, template_params):
-            assert 'ms=%(ms)s view=%(view)s rattr-foo=%(rattr-foo)s' == log_template
+            compare_str = 'ms=%(ms)s view=%(view)s rattr-foo=%(rattr-foo)s'
+            assert compare_str == log_template
             assert template_params['rattr-foo'] == 'bar'
 
         mock_logger.info.side_effect = info
@@ -401,8 +416,8 @@ def test_perflog_view_dictionary_w_empty_prefix_extra_logging():
                 'data': {'output_key': 'output_val'},
             }
 
-        # Create a WSGI app with Pyramid and then wrap it with webtest.TestApp for
-        # testing
+        # Create a WSGI app with Pyramid and then wrap it with
+        # webtest.TestApp for testing
         config = testing.setUp()
         config.add_route('view', '/view')
         config.add_view(view_func, route_name='view', renderer='json')

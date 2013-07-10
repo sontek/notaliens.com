@@ -5,9 +5,9 @@ from sqlalchemy.types import Integer
 from notaliens.core.models import Base
 from notaliens.core.models.translation import TranslatableMixin
 
+
 class Country(Base, TranslatableMixin):
     __translatables__ = ['name', 'official_name']
-    
     name = Column(Unicode(128), nullable=False)
     official_name = Column(Unicode(128), nullable=True)
     alpha2 = Column(Unicode(128), nullable=True)
@@ -30,6 +30,7 @@ class Language(Base, TranslatableMixin):
 
     def __json__(self, request):
         return {'pk': self.pk, 'name': self.name.encode('utf-8')}
+
 
 class Timezone(Base, TranslatableMixin):
     __translatables__ = ['name']
