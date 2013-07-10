@@ -4,8 +4,14 @@ import os
 import requests
 import sys
 
-from cStringIO import StringIO
+#py3
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import BytesIO as StringIO
+
 from pyramid.paster import get_appsettings
+from pyramid.paster import setup_logging
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -23,6 +29,7 @@ def update(argv=sys.argv):
         usage(argv)
 
     config_uri = argv[1]
+    setup_logging(config_uri)
     settings = get_appsettings(config_uri)
     source = settings['geoip.city.source']
     output = settings['geoip.city.db']
