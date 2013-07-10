@@ -9,16 +9,17 @@ from sqlalchemy.orm import relationship
 from notaliens.core.models import JsonSerializableMixin
 from notaliens.core.models import Base
 
+
 class NullPkMixin(Base):
     """ Horus is now going to default to 'id' as the primary key
     because its more common in open source projects, but I prefer keeping
-    usin using pk. 
+    usin using pk.
 
     This class overrides the horus id to use pk
     """
     __abstract__ = True
     _idAttribute = 'pk'
-#
+
     @declared_attr
     def pk(self):
         return Base.pk
@@ -44,7 +45,6 @@ class User(NullPkMixin, UserMixin, JsonSerializableMixin):
     _json_blacklist = ['salt', 'password', '_password']
     _json_eager_load = ['profile']
     profile = relationship('UserProfile', uselist=False, backref='user')
-
 
     def __json__(self, request):
         """ JSON Serialization, that overrides the default horus __json__

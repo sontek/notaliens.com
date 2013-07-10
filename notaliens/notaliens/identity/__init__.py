@@ -2,10 +2,11 @@ from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from horus import groupfinder
 
+
 def includeme(config):
     authentication_policy = AuthTktAuthenticationPolicy(
-        config.registry.settings['auth.secret']
-        , callback=groupfinder
+        config.registry.settings['auth.secret'],
+        callback=groupfinder
     )
 
     authorization_policy = ACLAuthorizationPolicy()
@@ -18,8 +19,8 @@ def includeme(config):
     config.include('horus')
 
     config.override_asset(
-        to_override='horus:templates/'
-        , override_with='notaliens:identity/templates/'
+        to_override='horus:templates/',
+        override_with='notaliens:identity/templates/'
     )
 
     config.scan_horus('notaliens.identity.models')

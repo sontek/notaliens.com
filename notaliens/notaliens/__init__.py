@@ -10,6 +10,7 @@ def setup_includes(config):
     config.include('notaliens.people', route_prefix='/people')
     config.include('notaliens.identity', route_prefix='/identity')
 
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -17,8 +18,8 @@ def main(global_config, **settings):
     session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
 
     config = Configurator(
-        settings=settings
-        , session_factory=session_factory
+        settings=settings,
+        session_factory=session_factory
     )
 
     config.add_static_view('static', 'static', cache_max_age=3600)
