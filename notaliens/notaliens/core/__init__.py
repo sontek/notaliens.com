@@ -3,6 +3,7 @@ from hem.interfaces import IDBSession
 from notaliens.core.interfaces import IDBSessionMaker
 from notaliens.core.models import DBSession
 
+
 def get_db_session(request):
     """
     This will be lazily loaded whenever the `db_session` attribute
@@ -21,6 +22,7 @@ def get_db_session(request):
     request.add_finished_callback(cleanup)
 
     return session
+
 
 def includeme(config):
 
