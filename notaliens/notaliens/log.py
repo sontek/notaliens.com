@@ -32,6 +32,7 @@ colorama_init()
 
 log_namespace = __name__
 
+
 def iterargs(*args, **kwargs):
     """
     Generator that yields given args and kwargs as strings.
@@ -58,13 +59,15 @@ def perflog(log_level='INFO'):
 
             # Make a nice formatting
             args_str = ", ".join(iterargs(*args, **kwargs))
-            log({
-                "chrono": chrono * 1000,
-                "module": func.__module__,
-                "class": args[0].__class__.__name__,
-                "func": func.__name__,
-                "args": args_str
-            })
+            log(
+                {
+                    "chrono": chrono * 1000,
+                    "module": func.__module__,
+                    "class": args[0].__class__.__name__,
+                    "func": func.__name__,
+                    "args": args_str
+                }
+            )
             return output
 
         def function_wrapper(*args, **kwargs):  # pylint:disable=C0111
@@ -74,12 +77,14 @@ def perflog(log_level='INFO'):
 
             # Make a nice formatting
             args_str = ", ".join(iterargs(*args, **kwargs))
-            log({
-                "chrono": chrono * 1000,
-                "module": func.__module__,
-                "func": func.__name__,
-                "args": args_str
-            })
+            log(
+                {
+                    "chrono": chrono * 1000,
+                    "module": func.__module__,
+                    "func": func.__name__,
+                    "args": args_str
+                }
+            )
             return output
 
         func_args = inspect.getargspec(func)
@@ -87,7 +92,8 @@ def perflog(log_level='INFO'):
 
         log = getattr(logger, log_level.lower())
         if is_method:
-            template = "ms=%(chrono)d func=%(module)s.%(class)s.%(func)s(%(args)s)"
+            fmt = "ms=%(chrono)d func=%(module)s.%(class)s.%(func)s(%(args)s)"
+            template = fmt
             log = partial(log, template)
             return update_wrapper(method_wrapper, func)
 
@@ -96,6 +102,7 @@ def perflog(log_level='INFO'):
         return update_wrapper(function_wrapper, func)
 
     return decorator
+
 
 def log_request(request):
     final_time = time() - request.start_time
@@ -136,7 +143,7 @@ def log_request(request):
     for related in introspector.related(route_intr):
         if related.category_name == 'views':
             view_func = related['callable']
-            is_static_view = isinstance(view_func, static_view) 
+            is_static_view = isinstance(view_func, static_view)
 
             if is_static_view and should_log_static:
                 # lets log the path if it is a static view
@@ -157,7 +164,6 @@ def log_request(request):
         # if we don't find a view to log, this means we are on a static view
         # and dont want to log this request
         return
-
 
     for log_key in log_keys:
         log_func = loggers[log_key]
@@ -268,6 +274,7 @@ def colorize_text(text):
 def get_key(key, ns=log_namespace):
     key = '%s.%s' % (log_namespace, key)
     return key
+
 
 def log_request_id_in_threadname(event):
     """

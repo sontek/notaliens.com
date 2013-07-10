@@ -1,5 +1,5 @@
 def display_name(user):
-    first = user['profile']['first_name'] 
+    first = user['profile']['first_name']
     last = user['profile']['last_name']
 
     if first and last:

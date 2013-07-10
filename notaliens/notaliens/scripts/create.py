@@ -10,8 +10,8 @@ from sqlalchemy import engine_from_config
 from getpass import getpass
 
 from pyramid.paster import (
-    bootstrap
-    , setup_logging
+    bootstrap,
+    setup_logging
 )
 
 from notaliens.core.models import Base
@@ -21,17 +21,18 @@ from notaliens.people import USER_INDEX
 import pyelasticsearch
 import random
 
-try: 
+try:
     input = raw_input
 except NameError:
     pass
 
 here = os.path.dirname(__file__)
 
+
 def usage(argv):
     cmd = os.path.basename(argv[0])
     print('usage: %s <config_uri>\n'
-          '(example: "%s development.ini")' % (cmd, cmd)) 
+          '(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
 
 
@@ -55,10 +56,10 @@ def setup_global_data(session):
 
     for country in pycountry.countries:
         new_country = Country(
-                name=country.name,
-                alpha2=country.alpha2,
-                alpha3=country.alpha3,
-                numeric=country.numeric
+            name=country.name,
+            alpha2=country.alpha2,
+            alpha3=country.alpha3,
+            numeric=country.numeric
         )
 
         if hasattr(country, 'official_name'):
@@ -76,12 +77,12 @@ def setup_global_data(session):
 
     lang_blacklist = [
         "English, Old (ca.450-1100)"
-        , "English, Middle (1100-1500)"
-        , "German, Middle High (ca.1050-1500)"
-        , "German, Old High (ca.750-1050)"
-        , "Irish, Middle (900-1200)"
-        , "Irish, Old (to 900)"
-        , "Persian, Old (ca.600-400 B.C.)"
+        "English, Middle (1100-1500)",
+        "German, Middle High (ca.1050-1500)",
+        "German, Old High (ca.750-1050)",
+        "Irish, Middle (900-1200)",
+        "Irish, Old (to 900)",
+        "Persian, Old (ca.600-400 B.C.)"
 
     ]
 
@@ -108,19 +109,19 @@ def setup_global_data(session):
                     name = lang_convert_list[name]
 
                 language = Language(
-                    alpha3_bib=values[0]
-                    , alpha3_term=values[1]
-                    , alpha2=values[2]
-                    , name=name
+                    alpha3_bib=values[0],
+                    alpha3_term=values[1],
+                    alpha2=values[2],
+                    name=name
                 )
 
                 session.add(language)
 
         return {
-            'currencies': currencies
-            , 'timezones': timezones
-            , 'countries': countries
-            , 'languages': languages
+            'currencies': currencies,
+            'timezones': timezones,
+            'countries': countries,
+            'languages': languages
         }
 
 
@@ -137,18 +138,17 @@ def generate_default_data(session):
     last_name = input("What is your last name?: ")
     one_liner = input("Please provide a 140 char description: ")
 
-
     admin = User(
-        username=username
-        , email=email
-        , password=password
+        username=username,
+        email=email,
+        password=password
     )
 
     profile = UserProfile(
-        user=admin
-        , first_name=first_name
-        , last_name=last_name
-        , one_liner=one_liner
+        user=admin,
+        first_name=first_name,
+        last_name=last_name,
+        one_liner=one_liner
     )
 
     session.add(admin)
@@ -159,24 +159,24 @@ def generate_default_data(session):
     users = [admin]
 
     for x in range(0, 22):
-        username = '%s%s' % ( random.choice(user_names), x)
+        username = '%s%s' % (random.choice(user_names), x)
         user = User(
-            username=username
-            , email='%s@gmail.com' % (username)
-            , password='temp'
+            username=username,
+            email='%s@gmail.com' % (username),
+            password='temp'
         )
 
         first_names = ['John', 'Robert', 'Ashley', 'Jessica', 'Alex', 'Greg',
-            'Morgan', 'Graham', 'Fred', 'Mike', 'Ted', 'Melissa']
+                       'Morgan', 'Graham', 'Fred', 'Mike', 'Ted', 'Melissa']
 
         last_names = ['Anderson', 'Smith', 'Henderson', 'Jones', 'Doe',
-            'Davis', 'White', 'Garcia']
+                      'Davis', 'White', 'Garcia']
 
         profile = UserProfile(
-            user=user
-            , first_name=random.choice(first_names)
-            , last_name=random.choice(last_names)
-            , one_liner=''
+            user=user,
+            first_name=random.choice(first_names),
+            last_name=random.choice(last_names),
+            one_liner=''
         )
 
         users.append(user)
@@ -186,8 +186,8 @@ def generate_default_data(session):
 
     global_data['users'] = users
 
-
     return global_data
+
 
 def main(argv=sys.argv):
     if len(argv) != 2:

@@ -1,6 +1,7 @@
 from horus.resources import RootFactory
 from notaliens.people.models import get_user_by_username
 
+
 class UserFactory(RootFactory):
     def __init__(self, request):
         self.request = request
