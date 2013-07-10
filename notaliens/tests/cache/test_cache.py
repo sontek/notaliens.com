@@ -5,11 +5,35 @@ import mock
 from pyramid import testing
 from webtest import TestApp
 
+try:
+    from imp import reload
+except ImportError:
+    pass
+
+
 
 # We're going to monkey patch this into dogpile.cache.CacheRegion
 class CacheRegion(object):
-    def __init__(*args, **kwargs):
-        pass
+    def __init__(self, *args, **kwargs):
+        self.cache = {}
+
+    def get(self, key):
+        if key in self.cache:
+            return self.cache[key]
+
+    def set(self, key, value):
+        self.cache[key] = value
+
+    def get_or_create(self, key, creator, *kwargs):
+        val = self.get(key)
+
+        if not val:
+            val = creator()
+            self.cache[key] = val
+
+            return val
+
+        return val
 
     def configure_from_config(self, settings, prefix):
         pass
@@ -19,11 +43,12 @@ class TestCacheableDecorator(unittest.TestCase):
     def setUp(self):
         import sys
         from dogpile.cache import api
+
         def view_func(request):
             return request.cache_settings
 
         config = testing.setUp()
-        config.registry.settings['cache.enable'] = True
+        config.registry.settings['cache.enabled'] = True
 
         self.dogpile_cache_module = mock.Mock()
         self.dogpile_cache_module.api = api
@@ -51,7 +76,7 @@ class TestCacheableDecorator(unittest.TestCase):
             def __init__(self):
                 self.counter = 0
 
-            @cacheable()
+            @cacheable('group1')
             def func(self, x, y):
                 self.counter += 1
                 return self.counter
@@ -67,11 +92,6 @@ class TestCacheableDecorator(unittest.TestCase):
 
         self.func = func
 
-    def test_cacheable_not_enabled(self):
-        obj = self.SomeClass()
-
-        ret = obj.func(3, 5, use_cache=False)
-
     def test_cacheable_method_enabled_cache_group(self):
         obj = self.SomeClass()
 
@@ -80,22 +100,10 @@ class TestCacheableDecorator(unittest.TestCase):
         # creator_func gets called
         #
 
-        def creator_func(me, key, creator_func):
-            creator_func()
-
-        CacheRegion.get_or_create = creator_func
-
-        ret = obj.func(3, 5, use_cache=True, cache_group='group1')
+        ret = obj.func(3, 5)
         self.assertEquals(ret, 1)
 
-        #
-        # Second time we call obj.func, we simulate that 1 is in cache so
-        # we get that back and creator_func is never called
-        #
-
-        CacheRegion.get_or_create = lambda self, key, creator_func: 1
-
-        ret = obj.func(3, 5, use_cache=True, cache_group='group1')
+        ret = obj.func(3, 5)
         self.assertEquals(ret, 1)
 
         self.assertEquals(obj.counter, 1)
@@ -104,28 +112,18 @@ class TestCacheableDecorator(unittest.TestCase):
         # Then simulate invalidating a cache group
         #
 
-        CacheRegion.get = lambda self, key: set(
-            ['tests.test_cache.SomeClass.func(1928d6e533501545d0acd928ebf8059df1dad6f1)']  # nopep8
-        )
-        CacheRegion.delete = lambda self, key: None
-
         self.invalidate_group('group1')
 
-        CacheRegion.get_or_create = creator_func
-        CacheRegion.set = lambda self, key, value: None
-
-        ret = obj.func(3, 5, use_cache=True, cache_group='group1')
+        ret = obj.func(3, 5)
         self.assertEquals(ret, 2)
 
     def test_cacheable_function(self):
-        ret = self.func(3, datetime(year=2013, month=5, day=10),
-                        use_cache=True)
+        ret = self.func(3, datetime(year=2013, month=5, day=10))
         self.assertEquals(ret, 1)
 
     def test_get_cache_settings(self):
         ret = self.app.get('/view')
-        import pdb; pdb.set_trace()
-        self.assertEqual(ret.json_body['enable'], True)
+        self.assertEqual(ret.json_body['enabled'], True)
 
     def test_include_cache_not_enabled(self):
         config = testing.setUp()
