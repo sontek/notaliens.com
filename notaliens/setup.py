@@ -16,6 +16,7 @@ requires = [
     'psycopg2',
     'pycountry',
     'pyelasticsearch',
+    'pygeoip',
     'pyramid>=1.4.2',
     'pyramid_debugtoolbar',
     'pyramid_mailer',
