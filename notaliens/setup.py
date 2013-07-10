@@ -14,7 +14,7 @@ requires = [
     'horus',
     'mako',
     'psycopg2',
-    'pycountry',
+    'pycountry-nopytest',
     'pyelasticsearch',
     'pygeoip',
     'pyramid>=1.4.2',
