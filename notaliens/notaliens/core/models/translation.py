@@ -26,7 +26,7 @@ class TranslatableMixin(object):
             translation_dict[translation.field] = translation
             try:
                 fields_to_create.remove(translation.field)
-            except (ValueError,) as e:
+            except (ValueError,):
                 pass
         # if no translation is found autogenerate one
         for field in fields_to_create:

@@ -109,7 +109,7 @@ def test_perflog_tween_include_w_extra_logging():
         app = TestApp(app)
 
         def info(log_template, template_params):
-            log_format = '%s %s %s %s %s' % (
+            log_format = '%s %s %s %s %s %s' % (
                 'ms=%(ms)s',
                 'view=%(view)s',
                 'body=%(body)s',
