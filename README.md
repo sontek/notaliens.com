@@ -45,6 +45,28 @@ Getting Started
 ==================================
     $ easy_install -U setuptools
     $ python bootstrap.py
+
+
+Before running buildout, you need to make sure you have postgresql installed.
+
+# Fedora
+
+    $ sudo yum install postgresql-server postgresql-devel
+    $ sudo su - postgres
+    $ initdb
+    $ exit
+    $ sudo systemctl start postgresql.service
+    $ sudo su - postgres
+    $ createuser -s <your user name>
+    $ exit
+    $ createdb notaliens
+
+# Ubuntu
+
+    TBD
+
+# Finally
+
     $ bin/buildout
     $ bin/notaliens_create_db notaliens/development.ini
 
