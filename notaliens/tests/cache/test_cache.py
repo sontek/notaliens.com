@@ -11,7 +11,6 @@ except ImportError:
     pass
 
 
-
 # We're going to monkey patch this into dogpile.cache.CacheRegion
 class CacheRegion(object):
     def __init__(self, *args, **kwargs):

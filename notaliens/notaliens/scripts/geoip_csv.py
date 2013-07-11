@@ -86,7 +86,6 @@ def update(argv=sys.argv):
         metro_code = 7
         area_code = 8
 
-
         reader = csv.reader(f, delimiter=',')
 
         rows = list(reader)
