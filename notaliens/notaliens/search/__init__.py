@@ -12,11 +12,17 @@ class SafeEs(object):
     def __init__(self, es):
         self.es = es
 
-    def create_index(self, index, descriptor, body, **kwargs):
+    def index(self, index, descriptor, body, **kwargs):
         try:
             self.es.index(index, descriptor, body, **kwargs)
         except (InvalidJsonResponseError, ConnectionError):
             logger.exception("Couldn't index data to ElasticSearch")
+
+    def create_index(self, index, settings=None, mapping=None):
+        try:
+            self.es.create_index(index, settings=settings)
+        except (InvalidJsonResponseError, ConnectionError):
+            logger.exception("Couldn't create the index in ElasticSearch")
 
     def delete_index(self, index):
         try:
@@ -34,6 +40,12 @@ class SafeEs(object):
             else:
                 logger.warn("No fallback registered")
                 raise
+
+    def put_mapping(self, index, descriptor, body):
+        try:
+            return self.es.put_mapping(index, descriptor, body)
+        except (InvalidJsonResponseError, ConnectionError):
+            logger.exception("Couldn't set the mapping for ElasticSearch")
 
 
 def _get_search_settings(settings, prefix='search.'):

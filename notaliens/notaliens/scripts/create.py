@@ -15,7 +15,7 @@ from pyramid.paster import (
 )
 
 from notaliens.core.models import Base
-from notaliens.people.models import index_users
+from notaliens.people.search import index_users
 from notaliens.people import USER_INDEX
 
 import pyelasticsearch
@@ -221,6 +221,9 @@ def main(argv=sys.argv):
             request.es.delete_index(USER_INDEX)
         except pyelasticsearch.exceptions.ElasticHttpNotFoundError:
             pass
+
+        request.es.put_mapping(USER_INDEX, 'user', {
+        })
 
         index_users(request, data['users'])
 

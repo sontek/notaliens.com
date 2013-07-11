@@ -87,6 +87,16 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
         else:
             return self.user.username
 
+    def __json__(self, request):
+        results = JsonSerializableMixin.__json__(self, request)
+
+        results['location'] = {
+            'lat': self.latitude,
+            'lon': self.longitude
+        }
+
+        return results
+
 
 @perflog()
 def get_user_by_username(
@@ -225,14 +235,3 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None):
 
     else:
         return results
-
-
-@perflog()
-def index_users(request, users):
-    for user in users:
-        request.es.create_index(
-            USER_INDEX,
-            'user',
-            user.__json__(request),
-            id=user.pk
-        )

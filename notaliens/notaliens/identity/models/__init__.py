@@ -51,5 +51,4 @@ class User(NullPkMixin, UserMixin, JsonSerializableMixin):
         to also ignore things in _json_blacklist
         """
         results = JsonSerializableMixin.__json__(self, request)
-
         return results

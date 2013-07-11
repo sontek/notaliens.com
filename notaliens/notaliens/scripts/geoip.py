@@ -13,7 +13,6 @@ except ImportError:
 from pyramid.paster import get_appsettings
 from pyramid.paster import setup_logging
 
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 
