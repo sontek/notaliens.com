@@ -29,7 +29,7 @@
       ${user['email']}
     </td>
     <td>
-      N/A
+      ${display_location(user)}
     </td>
   </tr>
 % endfor

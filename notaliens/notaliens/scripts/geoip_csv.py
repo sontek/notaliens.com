@@ -14,6 +14,7 @@ from sqlalchemy.orm import sessionmaker
 
 from notaliens.core.models.meta import GeoRegion
 from notaliens.people.models import UserProfile
+from notaliens.core.models.meta import Country
 
 #py3
 try:
@@ -110,7 +111,7 @@ def update(argv=sys.argv):
                 area_code=area_code
             )
 
-            postals[postal_code] = (latitude, longitude)
+            postals[postal_code] = ip
 
             db_session.add(ip)
 
@@ -127,11 +128,20 @@ def update(argv=sys.argv):
 
         users = db_session.query(UserProfile).all()
 
+        countries_dict = {}
+        countries = db_session.query(Country).all()
+
+        for country in countries:
+            countries_dict[country.alpha2] = country
+
         for user in users:
             postal_data = postals[user.postal]
 
-            user.latitude = postal_data[0]
-            user.longitude = postal_data[1]
+            user.latitude = postal_data.latitude
+            user.longitude = postal_data.longitude
+            user.city = postal_data.city
+            user.state = postal_data.region
+            user.country = countries_dict[postal_data.country]
 
             db_session.add(user)
 

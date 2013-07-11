@@ -54,6 +54,7 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = [
         'description', 'city', 'state'
     ]
+    _json_eager_load = ['country']
 
     user_pk = Column(Integer, ForeignKey('user.pk'))
     description = Column(UnicodeText, nullable=True)

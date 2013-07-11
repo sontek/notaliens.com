@@ -5,9 +5,10 @@ from sqlalchemy.types import Float
 
 from notaliens.core.models import Base
 from notaliens.core.models.translation import TranslatableMixin
+from notaliens.core.models import JsonSerializableMixin
 
 
-class Country(Base, TranslatableMixin):
+class Country(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = ['name', 'official_name']
     name = Column(Unicode(128), nullable=False)
     official_name = Column(Unicode(128), nullable=True)
