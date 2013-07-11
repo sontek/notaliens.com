@@ -1,6 +1,7 @@
 from pyramid.view import view_config
 from notaliens.people.models import get_user_by_username
 from notaliens.people.models import get_users
+from notaliens.core.models.meta import get_region_by_postal
 
 import math
 
@@ -17,17 +18,33 @@ def people_index(request):
     max_rows = 10
     page = 0
     search_text = None
+    distance_settings = None
+    postal_code = None
+    distance = None
 
     if request.method == 'GET':
         page = int(request.matchdict.get('page', page))
     elif request.method == 'POST':
         search_text = request.POST['search'].strip()
+        postal_code = request.POST['postal_code'].strip()
+        distance = int(request.POST['distance'].strip())
+
+        if postal_code and distance:
+            region = get_region_by_postal(request.db_session, postal_code)
+
+            distance_settings = {
+                'postal_code': postal_code,
+                'distance': distance,
+                'lat': region.latitude,
+                'lon': region.longitude
+            }
 
     data = get_users(
         request,
         page=page,
         limit=max_rows,
-        search_text=search_text
+        search_text=search_text,
+        distance_settings=distance_settings
     )
 
     data['pages'] = int(math.ceil(data['count'] / max_rows))
@@ -35,6 +52,10 @@ def people_index(request):
 
     if search_text:
         data['search_text'] = search_text
+
+    if postal_code:
+        data['postal_code'] = postal_code
+        data['distance'] = distance
 
     return {
         'data': data

@@ -120,7 +120,8 @@ def get_user_by_username(
     return user
 
 
-def get_users(request, search_text=None, page=0, limit=50):
+def get_users(request, search_text=None, distance_settings=None, page=0,
+limit=50):
     """ This will get the users limited by `page` and `limit`.  It will
     return a dict of the total users and the limited paged results.
 
@@ -151,7 +152,8 @@ def get_users(request, search_text=None, page=0, limit=50):
             page,
             limit,
             fallback=db_wrapper,
-            search_text=search_text)
+            search_text=search_text,
+            distance_settings=distance_settings)
         return results
     else:
         return db_wrapper()
@@ -205,11 +207,15 @@ def get_users_from_db(session, page, limit, search_text=None):
 
 
 @perflog()
-def get_users_from_es(es, page, limit, fallback=None, search_text=None):
+def get_users_from_es(es, page, limit, fallback=None, search_text=None,
+distance_settings=None):
     query = {
         'from': page,
         'size': limit
     }
+
+    if search_text or distance_settings:
+        query['query'] = {}
 
     if search_text:
         search_text = search_text.lower()
@@ -217,6 +223,19 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None):
             'multi_match': {
                 'query': search_text,
                 'fields': ['first_name', 'email']
+            }
+        }
+
+    if distance_settings:
+        query['query']['filtered'] = {
+            'filter': {
+                'geo_distance': {
+                    'distance': '%smi' % distance_settings['distance'],
+                    'location': {
+                        'lat': distance_settings['lat'],
+                        'lon': distance_settings['lon']
+                    }
+                }
             }
         }
 

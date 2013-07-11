@@ -1,10 +1,35 @@
 <%inherit file="notaliens:core/templates/layout.mako"/>
-<form class="form-search pull-right" method="POST">
-  % if 'search_text' in data:
-      <input type="text" class="input-medium search-query" name="search" value="${data['search_text']}">
-  % else:
-      <input type="text" class="input-medium search-query" name="search">
-  % endif
+<form class="form-search" method="POST">
+      <div>
+        <label>Search Text</label>
+        % if 'search_text' in data:
+          <input type="text" class="input-medium search-query" name="search" value="${data['search_text']}">
+        % else:
+          <input type="text" class="input-medium search-query" name="search">
+        % endif
+      </div>
+      <div>
+        <label>Postal Code</label>
+        % if 'postal_code' in data:
+          <input type="text" class="input-medium search-query" name="postal_code" value="${data['postal_code']}">
+        % else:
+          <input type="text" class="input-medium search-query" name="postal_code">
+        % endif
+        <label>Within</label>
+        <select name="distance">
+          % for i in [30, 60, 120]:
+              % if 'distance' in data:
+                  % if data['distance'] == i:  
+                    <option selected="selected" value="${i}">${i}</option>
+                  % else:
+                    <option value="${i}">${i}</option>
+                  % endif
+              % else:
+                  <option value="${i}">${i}</option>
+              % endif
+          % endfor
+        </select>
+      </div>
   <button type="submit" class="btn">Search</button>
 </form>
 
