@@ -1,74 +1,72 @@
 from notaliens.log import perflog
 from notaliens.people import USER_INDEX
-from pyelastic.search.exceptions import ElasticHttpNotFoundError
+from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
 user_mapping = {
-    "users": {
-        "user": {
-            "properties": {
-                "date_created": {
-                    "type": "date",
-                    "format": "dateOptionalTime"
+    "user": {
+        "properties": {
+            "date_created": {
+                "type": "date",
+                "format": "dateOptionalTime"
+                },
+            "email": {
+                "type": "string"
+                },
+            "last_login_date": {
+                "type": "date",
+                "format": "dateOptionalTime"
+                },
+            "pk": {
+                "type": "long"
+                },
+            "profile": {
+                "properties": {
+                    "location": {
+                        "type": "geo_point"
                     },
-                "email": {
-                    "type": "string"
-                    },
-                "last_login_date": {
-                    "type": "date",
-                    "format": "dateOptionalTime"
-                    },
-                "pk": {
-                    "type": "long"
-                    },
-                "profile": {
-                    "properties": {
-                        "location": {
-                            "type": "geo_point"
-                            },
-                        "date_created": {
-                            "type": "date",
-                            "format": "dateOptionalTime"
-                            },
-                        "date_modified": {
-                            "type": "date",
-                            "format": "dateOptionalTime"
-                            },
-                        "first_name": {
-                            "type": "string"
-                            },
-                        "last_name": {
-                            "type": "string"
-                            },
-                        "latitude": {
-                            "type": "double"
-                            },
-                        "longitude": {
-                            "type": "double"
-                            },
-                        "one_liner": {
-                            "type": "string"
-                            },
-                        "pk": {
-                            "type": "long"
-                            },
-                        "postal": {
-                            "type": "string"
-                            },
-                        "user_pk": {
-                            "type": "long"
-                            }
+                    "date_created": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                        },
+                    "date_modified": {
+                        "type": "date",
+                        "format": "dateOptionalTime"
+                        },
+                    "first_name": {
+                        "type": "string"
+                        },
+                    "last_name": {
+                        "type": "string"
+                        },
+                    "latitude": {
+                        "type": "double"
+                        },
+                    "longitude": {
+                        "type": "double"
+                        },
+                    "one_liner": {
+                        "type": "string"
+                        },
+                    "pk": {
+                        "type": "long"
+                        },
+                    "postal": {
+                        "type": "string"
+                        },
+                    "user_pk": {
+                        "type": "long"
                         }
-                    },
-                "registered_date": {
-                    "type": "date",
-                    "format": "dateOptionalTime"
+                    }
                 },
-                "security_code": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
+            "registered_date": {
+                "type": "date",
+                "format": "dateOptionalTime"
+            },
+            "security_code": {
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
             }
         }
     }

@@ -95,25 +95,45 @@ To test the elastic search:
 
 Profile Schema:
 
-    curl -XGET 'http://127.0.0.1:9200/profiles/_mapping?pretty=1'
+    curl -XGET 'http://127.0.0.1:9200/users/_mapping?pretty=1'
 
 All profiles:
 
-    curl -XGET 'http://127.0.0.1:9200/profiles/_search?pretty=1'
+    curl -XGET 'http://127.0.0.1:9200/users/_search?pretty=1'
 
 
 Filter Profile:
 
-    curl -XGET 'http://127.0.0.1:9200/profiles/person/_search?q=first_name:john'
+    curl -XGET 'http://127.0.0.1:9200/users/user/_search?q=first_name:john&pretty=1'
 
 Or for more advanced querying:
 
-    curl -XPOST 'http://127.0.0.1:9200/profiles/person/_search?pretty=true' -d'
+    curl -XPOST 'http://127.0.0.1:9200/usres/user/_search?pretty=true' -d'
     {
         "query":{
             "term" : {
                 "first_name" :"john"
             }   
+        }
+    }
+    '
+
+For geo location queries:
+
+    curl -XPOST 'http://127.0.0.1:9200/users/user/_search?pretty=true' -d'
+    {
+        "query": {
+            "filtered" : {
+                "filter" : {
+                    "geo_distance" : {
+                        "distance" : "12km",
+                        "location" : {
+                            "lat" : 37.4644,
+                            "lon" : -122.2267
+                        }
+                    }
+                }
+            }
         }
     }
     '

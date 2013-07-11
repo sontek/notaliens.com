@@ -14,7 +14,6 @@ from pyramid.paster import (
 )
 
 from notaliens.people.models import get_users_from_db
-from notaliens.people import USER_INDEX
 from notaliens.people.search import index_users
 from notaliens.people.search import setup_user_index
 
