@@ -34,7 +34,7 @@ def includeme(config):
     * `request.registry['geoip']`: the GeoIP database.
 
     """
-    path_to_geoip_db = config.registry.settings["geoip.city.db"]
+    path_to_geoip_db = config.registry.settings["geoip.city.destination"]
     config.registry['geoip'] = pygeoip.GeoIP(path_to_geoip_db)
     config.add_request_method(get_ip_address, 'ip_address', reify=True)
     config.add_request_method(get_geoip_info, 'geoip_info', reify=True)

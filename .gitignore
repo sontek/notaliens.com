@@ -59,4 +59,7 @@ src/
 
 *.sqlite
 
+GeoLiteCity-latest.zip
 GeoIPCity.dat
+GeoIPCity.csv
+GeoIPCity/

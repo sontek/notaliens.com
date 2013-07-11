@@ -1,6 +1,7 @@
 from sqlalchemy import Column
 from sqlalchemy.types import Unicode
 from sqlalchemy.types import Integer
+from sqlalchemy.types import Float
 
 from notaliens.core.models import Base
 from notaliens.core.models.translation import TranslatableMixin
@@ -13,6 +14,17 @@ class Country(Base, TranslatableMixin):
     alpha2 = Column(Unicode(128), nullable=True)
     alpha3 = Column(Unicode(128), nullable=True)
     numeric = Column(Integer, nullable=True)
+
+
+class GeoRegion(Base):
+    country = Column(Unicode(128), nullable=False)
+    region = Column(Unicode(128), nullable=True)
+    city = Column(Unicode(128), nullable=True)
+    postal_code = Column(Unicode(128), nullable=True)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    metro_code = Column(Unicode(128), nullable=True)
+    area_code = Column(Unicode(128), nullable=True)
 
 
 class Currency(Base, TranslatableMixin):
