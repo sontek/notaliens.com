@@ -21,12 +21,10 @@ def display_location(user):
     if state:
         nodes.append(state)
 
-    loc = ', '.join(nodes)
-
     if country:
-        loc = '%s %s' % (loc, country['alpha2'])
+        nodes.append(country['alpha2'])
 
-    return loc
+    return ', '.join(nodes)
 
 
 def add_renderers(event):
