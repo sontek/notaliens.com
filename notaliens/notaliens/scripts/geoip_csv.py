@@ -91,16 +91,20 @@ def update(argv=sys.argv):
         rows = list(reader)
         total_rows = len(rows)
 
-        for count, row in enumerate(rows[2:]):
+        for count, (
+            locid, country, region, city, postal_code, latitude, longitude,
+                metro_code, area_code
+        ) in enumerate(rows[2:]):
+
             ip = GeoRegion(
-                country=row[country],
-                region=row[region],
-                city=row[city],
-                postal_code=row[postal_code],
-                latitude=row[latitude],
-                longitude=row[longitude],
-                metro_code=row[metro_code],
-                area_code=row[area_code]
+                country=country,
+                region=region,
+                city=city,
+                postal_code=postal_code,
+                latitude=latitude,
+                longitude=longitude,
+                metro_code=metro_code,
+                area_code=area_code
             )
 
             db_session.add(ip)
