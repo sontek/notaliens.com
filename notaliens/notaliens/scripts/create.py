@@ -136,7 +136,8 @@ def generate_default_data(session):
     password = getpass("What is your password?: ")
     first_name = input("What is your first name?: ")
     last_name = input("What is your last name?: ")
-    one_liner = input("Please provide a 140 char description: ")
+    one_liner = input("Please provide a max of 140 char description: ")
+    postal_code = input("What is your postal code?")
 
     admin = User(
         username=username,
@@ -148,7 +149,8 @@ def generate_default_data(session):
         user=admin,
         first_name=first_name,
         last_name=last_name,
-        one_liner=one_liner
+        one_liner=one_liner,
+        postal=postal_code
     )
 
     session.add(admin)
@@ -172,11 +174,16 @@ def generate_default_data(session):
         last_names = ['Anderson', 'Smith', 'Henderson', 'Jones', 'Doe',
                       'Davis', 'White', 'Garcia']
 
+        postal_codes = [
+            69008, 94061, 32571, 90210, 13010, 50304, 78748, '02627', 999077
+        ]
+
         profile = UserProfile(
             user=user,
             first_name=random.choice(first_names),
             last_name=random.choice(last_names),
-            one_liner=''
+            one_liner='',
+            postal=random.choice(postal_codes)
         )
 
         users.append(user)

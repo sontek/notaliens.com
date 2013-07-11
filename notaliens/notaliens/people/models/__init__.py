@@ -17,6 +17,7 @@ from sqlalchemy import func
 from sqlalchemy.types import UnicodeText
 from sqlalchemy.types import Unicode
 from sqlalchemy.types import Integer
+from sqlalchemy.types import Float
 from sqlalchemy import Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import joinedload
@@ -71,6 +72,8 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
     timezone_pk = Column(Integer, ForeignKey(Timezone.pk), nullable=True)
     timezone = relationship(Timezone)
     skills = relationship("SkillTag", secondary=user_skills)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
 
     @property
     def display_name(self):

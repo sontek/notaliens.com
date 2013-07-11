@@ -13,6 +13,7 @@ from sqlalchemy.orm import sessionmaker
 
 
 from notaliens.core.models.meta import GeoRegion
+from notaliens.people.models import UserProfile
 
 #py3
 try:
@@ -91,6 +92,8 @@ def update(argv=sys.argv):
         rows = list(reader)
         total_rows = len(rows)
 
+        postals = {}
+
         for count, (
             locid, country, region, city, postal_code, latitude, longitude,
                 metro_code, area_code
@@ -107,6 +110,8 @@ def update(argv=sys.argv):
                 area_code=area_code
             )
 
+            postals[postal_code] = (latitude, longitude)
+
             db_session.add(ip)
 
             if count % 5000 == 0:
@@ -114,4 +119,22 @@ def update(argv=sys.argv):
 
         log.info('Finished, pushing to the database')
 
+        db_session.flush()
+
+        log.info('Finished, pushing to the database')
+
+        log.info('Updating current users lat/long in DB')
+
+        users = db_session.query(UserProfile).all()
+
+        for user in users:
+            postal_data = postals[user.postal]
+
+            user.latitude = postal_data[0]
+            user.longitude = postal_data[1]
+
+            db_session.add(user)
+
         db_session.commit()
+
+        log.info('Done!')
