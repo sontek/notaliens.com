@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+from pyramid.settings import asbool
 from notaliens.people.models import get_user_by_username
 from notaliens.people.models import get_users
 from notaliens.core.models.meta import get_region_by_postal
@@ -21,6 +22,7 @@ def people_index(request):
     distance_settings = None
     postal_code = None
     distance = None
+    available_for_work = None
 
     if request.method == 'GET':
         page = int(request.matchdict.get('page', page))
@@ -28,6 +30,9 @@ def people_index(request):
         search_text = request.POST['search'].strip()
         postal_code = request.POST['postal_code'].strip()
         distance = int(request.POST['distance'].strip())
+
+        if 'available_for_work' in request.POST:
+            available_for_work = asbool(request.POST['available_for_work'])
 
         if postal_code and distance:
             region = get_region_by_postal(request.db_session, postal_code)
@@ -39,12 +44,14 @@ def people_index(request):
                 'lon': region.longitude
             }
 
+
     data = get_users(
         request,
         page=page,
         limit=max_rows,
         search_text=search_text,
-        distance_settings=distance_settings
+        distance_settings=distance_settings,
+        available_for_work=available_for_work
     )
 
     data['pages'] = int(math.ceil(data['count'] / max_rows))

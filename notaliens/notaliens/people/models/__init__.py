@@ -123,8 +123,8 @@ def get_user_by_username(
     return user
 
 
-def get_users(request, search_text=None, distance_settings=None, page=0,
-              limit=50):
+def get_users(request, search_text=None, distance_settings=None,
+              available_for_work=None, page=0, limit=50):
     """ This will get the users limited by `page` and `limit`.  It will
     return a dict of the total users and the limited paged results.
 
@@ -156,7 +156,8 @@ def get_users(request, search_text=None, distance_settings=None, page=0,
             limit,
             fallback=db_wrapper,
             search_text=search_text,
-            distance_settings=distance_settings)
+            distance_settings=distance_settings,
+            available_for_work=available_for_work)
         return results
     else:
         return db_wrapper()
@@ -211,7 +212,7 @@ def get_users_from_db(session, page, limit, search_text=None):
 
 @perflog()
 def get_users_from_es(es, page, limit, fallback=None, search_text=None,
-                      distance_settings=None):
+                      distance_settings=None, available_for_work=None):
     query = {
         'from': page,
         'size': limit
@@ -241,6 +242,15 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None,
                 }
             }
         }
+
+    if available_for_work is not None:
+        if 'filtered' not in query['query']:
+            query['query']['filtered'] = {}
+
+        query['query']['filtered']['query'] = {
+            'term': {'available_for_work': 'true'}
+        }
+
 
     results = es.search(query, fallback=fallback, index=USER_INDEX)
     # we got our data from elastic search

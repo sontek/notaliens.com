@@ -30,6 +30,11 @@
           % endfor
         </select>
       </div>
+      <div>
+        <label class="checkbox">
+            <input type="checkbox" name="available_for_work"> Available for work?
+        </label>
+      </div>
   <button type="submit" class="btn">Search</button>
 </form>
 
