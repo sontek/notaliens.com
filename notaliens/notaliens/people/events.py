@@ -16,7 +16,7 @@ def display_location(user):
     country = None
 
     if 'country' in user['profile']:
-        user['profile']['country']
+        country = user['profile']['country']
 
     nodes = []
 
