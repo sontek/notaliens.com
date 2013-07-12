@@ -1,7 +1,5 @@
 from pyramid.events import BeforeRender
 
-JOB_INDEX = 'jobs'
-
 
 def includeme(config):
     config.include('notaliens.sites.routes')

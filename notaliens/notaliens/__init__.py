@@ -9,6 +9,7 @@ def setup_includes(config):
     config.include('notaliens.search')
     config.include('notaliens.people', route_prefix='/people')
     config.include('notaliens.sites', route_prefix='/sites')
+    config.include('notaliens.jobs', route_prefix='/jobs')
     config.include('notaliens.identity', route_prefix='/identity')
     config.include('notaliens.geoip')
 
