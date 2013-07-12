@@ -98,7 +98,7 @@ def people_profile_view(request):
             'lat': region.latitude,
             'lon': region.longitude
         },
-    )['users'][:10]
+    )['users'][:5]
 
     data['user'] = user
 

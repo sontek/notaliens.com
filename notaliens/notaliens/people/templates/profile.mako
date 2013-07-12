@@ -23,11 +23,13 @@
           % endif
         </div>
         <div class="span2">
+          <h4>People Near By</h4>
           % if 'near_by' in data:
             % for user in data['near_by']:
               <div>
-                <a href="${request.route_url('people_profile', username=user['username'])}">${display_name(user)}</a>
-                <p>${display_location(user)}</p>
+                  <img src="${data['user'].gravatar_url(size=40)}" />
+                  <a href="${request.route_url('people_profile', username=user['username'])}">${display_name(user)}</a>
+                  <p>${display_location(user)}</p>
               </div>
             % endfor
           % endif
