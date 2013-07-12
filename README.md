@@ -137,3 +137,13 @@ For geo location queries:
         }
     }
     '
+
+Hacking
+===========
+To run our tests you can do:
+
+    $ bin/py.test notaliens/tests
+
+To get code coverage:
+
+    $ bin/py.test --cov-report term-missing --cov notaliens
