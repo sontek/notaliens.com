@@ -3,6 +3,8 @@ from pyramid.settings import asbool
 from notaliens.people.models import get_user_by_username
 from notaliens.people.models import get_users
 from notaliens.core.models.meta import get_region_by_postal
+from notaliens.people.models import refresh_user_location
+from notaliens.people.search import index_users
 
 import math
 
@@ -105,3 +107,35 @@ def people_profile_view(request):
     return {
         'data': data
     }
+
+
+def handle_profile_update(event):
+    """ This function is fired off from the horus profile view.
+    We have extended the profile to have extra data and we handle that data 
+    here 
+    """
+    request = event.request
+    context = request.context
+    values = event.values
+
+    email = values['email']
+    first_name = values['first_name']
+    last_name = values['last_name']
+    one_liner = values['one_liner']
+    postal = values['postal']
+
+    #language_ids = values['spoken_languages']
+    #timezone = values['timezone']
+
+    context.email = email
+    context.profile.first_name = first_name
+    context.profile.last_name = last_name
+    context.profile.one_liner = one_liner
+
+    if postal != context.profile.postal:
+        context.profile.postal = postal
+        refresh_user_location(request.db_session, context)
+
+    index_users(request, [context])
+
+    request.db_session.commit()

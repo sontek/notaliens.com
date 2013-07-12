@@ -56,3 +56,10 @@ def get_region_by_postal(session, postal_code):
     ).one()
 
     return region
+
+def get_country_by_alpha2(session, alpha2):
+    country = session.query(Country).filter(
+        Country.alpha2 == alpha2
+    ).one()
+
+    return country

@@ -126,8 +126,14 @@ class ProfileSchema(CSRFSchema):
         )
     email = colander.SchemaNode(colander.String(),
         validator=colander.Email())
-    first_name = colander.SchemaNode(colander.String())
-    last_name = colander.SchemaNode(colander.String())
+    first_name = colander.SchemaNode(
+        colander.String(),
+        default=profile_default,
+    )
+    last_name = colander.SchemaNode(
+        colander.String(),
+        default=profile_default
+    )
     city = colander.SchemaNode(colander.String(),
         default=profile_default,
         widget=deform.widget.TextInputWidget(template='readonly/textinput'),
@@ -138,17 +144,19 @@ class ProfileSchema(CSRFSchema):
         missing=None)
     postal = colander.SchemaNode(colander.String(),
         default=profile_default,
-        missing=None)
+    )
     country = colander.SchemaNode(colander.String(),
         #widget=country_widget,
         widget=deform.widget.TextInputWidget(template='readonly/textinput'),
         default=country_default, missing=None)
     timezone = colander.SchemaNode(colander.String(),
         widget=timezone_widget,
+        missing=None,
         default=timezone_default)
     spoken_Languages = colander.SchemaNode(
         deform.Set(),
         widget=language_widget,
+        missing=None,
         default=language_default,
         title='Languages')
     # This is a 140 character one liner about themselves
