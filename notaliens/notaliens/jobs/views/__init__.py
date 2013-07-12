@@ -9,5 +9,5 @@ def sites_index(request):
     if request.method == 'POST':
         url = request.POST.get('url')
 
-    take_screenshot(request, url)        
+        take_screenshot(request, url)        
     return {}

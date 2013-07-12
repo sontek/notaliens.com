@@ -43,6 +43,7 @@ def update(argv=sys.argv):
     log.info("Downloading done.")
 
     compressed = gzip.GzipFile(fileobj=StringIO(response.content))
+
     with open(output, "wb") as f:
         log.info("Writting to %s...", output)
         f.write(compressed.read())
