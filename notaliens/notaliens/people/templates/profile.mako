@@ -17,17 +17,21 @@
           <h4>${data['user'].profile.location}</h4>
           <em>${data['user'].profile.one_liner}</em>
           % if data['user'].profile.description:
-              ${data['user'].profile.description}
-          % else:
-              You have not filled out a profile description
+              <p>${data['user'].profile.description}</p>
           % endif
+
+          <div class="skills">
+            % for skill in data['user'].profile.skills:
+              <span class="tag">${skill.name}</span>
+            % endfor
+          </div>
         </div>
         <div class="span2">
           <h4>People Near By</h4>
           % if 'near_by' in data:
             % for user in data['near_by']:
               <div>
-                  <img src="${data['user'].gravatar_url(size=40)}" />
+                  <img src="${gravatar_url(user['email'], size=40)}" />
                   <a href="${request.route_url('people_profile', username=user['username'])}">${display_name(user)}</a>
                   <p>${display_location(user)}</p>
               </div>
