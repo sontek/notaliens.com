@@ -91,6 +91,28 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
         else:
             return self.user.username
 
+    @property
+    def location(self):
+        city = self.city
+        state = self.state
+        country = None
+
+        if self.country:
+            country = self.country
+
+        nodes = []
+
+        if city:
+            nodes.append(city)
+
+        if state:
+            nodes.append(state)
+
+        if country:
+            nodes.append(country.alpha2)
+
+        return ', '.join(nodes)
+
     def __json__(self, request):
         results = JsonSerializableMixin.__json__(self, request)
 

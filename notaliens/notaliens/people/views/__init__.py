@@ -44,7 +44,6 @@ def people_index(request):
             region = get_region_by_postal(request.db_session, postal_code)
 
             distance_settings = {
-                'postal_code': postal_code,
                 'distance': distance,
                 'lat': region.latitude,
                 'lon': region.longitude
@@ -88,6 +87,21 @@ def people_profile_view(request):
         request.matchdict['username']
     )
 
+    region = get_region_by_postal(request.db_session, user.profile.postal)
+
+    data = {}
+
+    data['near_by'] = get_users(
+        request,
+        distance_settings={
+            'distance': 50,
+            'lat': region.latitude,
+            'lon': region.longitude
+        },
+    )['users'][:10]
+
+    data['user'] = user
+
     return {
-        'user': user
+        'data': data
     }
