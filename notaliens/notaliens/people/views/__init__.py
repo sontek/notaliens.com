@@ -27,12 +27,18 @@ def people_index(request):
     if request.method == 'GET':
         page = int(request.matchdict.get('page', page))
     elif request.method == 'POST':
-        search_text = request.POST['search'].strip()
-        postal_code = request.POST['postal_code'].strip()
-        distance = int(request.POST['distance'].strip())
+        search_text = request.POST.get('search', '').strip()
+        postal_code = request.POST.get('postal_code', '').strip()
+        distance = request.POST.get('distance', '').strip()
+
+        if distance:
+            distance = int(distance)
 
         if 'available_for_work' in request.POST:
-            available_for_work = asbool(request.POST['available_for_work'])
+            available_for_work = request.POST.get('available_for_work', None)
+
+            if available_for_work:
+                available_for_work = asbool(available_for_work)
 
         if postal_code and distance:
             region = get_region_by_postal(request.db_session, postal_code)
