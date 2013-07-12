@@ -12,6 +12,7 @@ def includeme(config):
     config.registry.registerUtility(ProfileSchema, IProfileSchema)
 
     config.include('notaliens.people.routes')
+
     config.add_subscriber(
         'notaliens.people.events.add_renderers',
         BeforeRender

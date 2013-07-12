@@ -9,6 +9,7 @@
 
     <!-- Le styles -->
     <link href="${request.static_url('notaliens:static/css/bootstrap.min.css')}" rel="stylesheet">
+    <script type="text/javascript" src="${request.static_url('notaliens:static/js/jquery.js')}"></script>
 
     <style type="text/css">
       body {
@@ -74,7 +75,6 @@
 
     <!-- Le javascript
     ================================================== -->
-    <script type="text/javascript" src="${request.static_url('notaliens:static/js/jquery.js')}"></script>
     <script type="text/javascript" src="${request.static_url('notaliens:static/js/jquery-ui.js')}"></script>
     <script type="text/javascript" src="${request.static_url('notaliens:static/js/underscore.js')}"></script>
     <script type="text/javascript" src="${request.static_url('notaliens:static/js/backbone.js')}"></script>
