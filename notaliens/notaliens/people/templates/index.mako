@@ -40,6 +40,7 @@
       <th>Username</th>
       <th>E-mail</th>
       <th>Location</th>
+      <th>Available for work?</th>
       <th>Skills</th>
     </tr>
   </thead>
@@ -56,6 +57,13 @@
     </td>
     <td>
       ${display_location(user)}
+    </td>
+    <td>
+      % if user['profile']['available_for_work'] == False:
+        No
+      % else:
+        Yes
+      % endif
     </td>
     <td>
       ${', '.join([s['name'] for s in user['profile']['skills']])}
