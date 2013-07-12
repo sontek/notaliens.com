@@ -122,7 +122,7 @@ def get_user_by_username(
 
 
 def get_users(request, search_text=None, distance_settings=None, page=0,
-limit=50):
+              limit=50):
     """ This will get the users limited by `page` and `limit`.  It will
     return a dict of the total users and the limited paged results.
 
@@ -209,7 +209,7 @@ def get_users_from_db(session, page, limit, search_text=None):
 
 @perflog()
 def get_users_from_es(es, page, limit, fallback=None, search_text=None,
-distance_settings=None):
+                      distance_settings=None):
     query = {
         'from': page,
         'size': limit
@@ -256,6 +256,7 @@ distance_settings=None):
 
     else:
         return results
+
 
 def refresh_users_location(db_session):
     regions = db_session.query(GeoRegion).all()

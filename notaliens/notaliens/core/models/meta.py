@@ -49,6 +49,7 @@ class Timezone(Base, TranslatableMixin):
     __translatables__ = ['name']
     name = Column(Unicode(128), nullable=False)
 
+
 def get_region_by_postal(session, postal_code):
     region = session.query(GeoRegion).filter(
         GeoRegion.postal_code == postal_code

@@ -9,11 +9,12 @@ def display_name(user):
     else:
         return user['username']
 
+
 def display_location(user):
     city = user['profile']['city']
     state = user['profile']['state']
     country = None
-    
+
     if 'country' in user['profile']:
         user['profile']['country']
 
