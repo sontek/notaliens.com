@@ -40,6 +40,7 @@
       <th>Username</th>
       <th>E-mail</th>
       <th>Location</th>
+      <th>Skills</th>
     </tr>
   </thead>
 % for user in data['users']:
@@ -55,6 +56,9 @@
     </td>
     <td>
       ${display_location(user)}
+    </td>
+    <td>
+      ${', '.join([s['name'] for s in user['profile']['skills']])}
     </td>
   </tr>
 % endfor

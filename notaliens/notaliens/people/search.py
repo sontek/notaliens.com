@@ -8,17 +8,17 @@ user_mapping = {
             "date_created": {
                 "type": "date",
                 "format": "dateOptionalTime"
-                },
+            },
             "email": {
                 "type": "string"
-                },
+            },
             "last_login_date": {
                 "type": "date",
                 "format": "dateOptionalTime"
-                },
+            },
             "pk": {
                 "type": "long"
-                },
+            },
             "profile": {
                 "properties": {
                     "location": {
@@ -27,37 +27,45 @@ user_mapping = {
                     "date_created": {
                         "type": "date",
                         "format": "dateOptionalTime"
-                        },
+                    },
                     "date_modified": {
                         "type": "date",
                         "format": "dateOptionalTime"
-                        },
+                    },
                     "first_name": {
                         "type": "string"
-                        },
+                    },
                     "last_name": {
                         "type": "string"
-                        },
+                    },
                     "latitude": {
                         "type": "double"
-                        },
+                    },
                     "longitude": {
                         "type": "double"
-                        },
+                    },
                     "one_liner": {
                         "type": "string"
-                        },
+                    },
                     "pk": {
                         "type": "long"
-                        },
+                    },
                     "postal": {
                         "type": "string"
-                        },
+                    },
                     "user_pk": {
                         "type": "long"
+                    },
+                    "available_for_work": {
+                        "type": "boolean"
+                    },
+                    "skills": {
+                        "properties": {
+                            "name": {"type": "string"}
                         }
                     }
-                },
+                }
+            },
             "registered_date": {
                 "type": "date",
                 "format": "dateOptionalTime"

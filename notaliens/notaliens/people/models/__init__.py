@@ -18,6 +18,7 @@ from sqlalchemy import func
 from sqlalchemy.types import UnicodeText
 from sqlalchemy.types import Unicode
 from sqlalchemy.types import Integer
+from sqlalchemy.types import Boolean
 from sqlalchemy.types import Float
 from sqlalchemy import Table
 from sqlalchemy.orm import relationship
@@ -46,7 +47,7 @@ user_skills = Table(
 )
 
 
-class SkillTag(Base, TranslatableMixin):
+class SkillTag(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = ["name"]
     name = Column(UnicodeText, nullable=False, unique=True)
 
@@ -55,9 +56,10 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = [
         'description', 'city', 'state'
     ]
-    _json_eager_load = ['country']
+    _json_eager_load = ['country', 'skills']
 
     user_pk = Column(Integer, ForeignKey('user.pk'))
+    available_for_work = Column(Boolean, nullable=False, default=False)
     description = Column(UnicodeText, nullable=True)
     one_liner = Column(Unicode(140), nullable=False)
     first_name = Column(Unicode(255), nullable=True)
@@ -223,8 +225,8 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None,
         query['query'] = {
             'multi_match': {
                 'query': search_text,
-                'fields': ['first_name', 'email']
-            }
+                'fields': ['first_name', 'last_name', 'email', 'name']
+            },
         }
 
     if distance_settings:

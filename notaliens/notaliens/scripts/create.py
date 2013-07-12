@@ -17,6 +17,7 @@ from pyramid.paster import (
 from notaliens.core.models import Base
 from notaliens.people.search import index_users
 from notaliens.people.search import setup_user_index
+from notaliens.people.models import SkillTag
 
 import random
 
@@ -136,12 +137,15 @@ def generate_default_data(session):
     first_name = input("What is your first name?: ")
     last_name = input("What is your last name?: ")
     one_liner = input("Please provide a max of 140 char description: ")
-    postal_code = input("What is your postal code?")
+    postal_code = input("What is your postal code? ")
+    skill_strings = input("Do you have any skills (comma separated)? ")
+
+    skill_strings = set([s.strip().lower() for s in skill_strings.split(',')])
 
     admin = User(
         username=username,
         email=email,
-        password=password
+        password=password,
     )
 
     profile = UserProfile(
@@ -152,8 +156,12 @@ def generate_default_data(session):
         postal=postal_code
     )
 
+    for skill in skill_strings:
+        profile.skills.append(SkillTag(name=skill))
+
     session.add(admin)
     session.add(profile)
+    session.flush()
 
     user_names = ['sontek', 'kober', 'housewifehacker', 'ketnos', 'rusty']
 
@@ -178,13 +186,41 @@ def generate_default_data(session):
             94160, 95062, 36675, 75017, 92050
         ]
 
+        skill_sets = [
+            'pyramid', 'python', 'redis', 'elasticsearch', 'zodb',
+            'mako', 'postgresql', 'docker', 'openstack', 'zope', 'plone'
+        ]
+
+        skill_objects = []
+
+        for skill in skill_sets:
+            obj = session.query(SkillTag).filter(
+                SkillTag.name == skill
+            ).first()
+
+            if obj is None:
+                obj = SkillTag(name=skill)
+                session.add(obj)
+
+            skill_objects.append(obj)
+
         profile = UserProfile(
             user=user,
             first_name=random.choice(first_names),
             last_name=random.choice(last_names),
             one_liner='',
-            postal=random.choice(postal_codes)
+            postal=random.choice(postal_codes),
         )
+
+        amount_of_skills = random.randint(1, 8)
+        new_skills = set()
+
+        for i in range(0, amount_of_skills):
+            new_skill = random.choice(skill_objects)
+            new_skills.add(new_skill)
+
+        for new_skill in new_skills:
+            profile.skills.append(new_skill)
 
         users.append(user)
 
