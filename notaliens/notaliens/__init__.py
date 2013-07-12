@@ -1,6 +1,9 @@
 from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
+import os
+
+here = os.path.dirname(__file__)
 
 def setup_includes(config):
     config.include('notaliens.cache')
@@ -23,6 +26,16 @@ def main(global_config, **settings):
     config = Configurator(
         settings=settings,
         session_factory=session_factory
+    )
+
+    config.registry['phantomjs_path'] = os.path.join(
+        here,
+        '../../bin/phantomjs'
+    )
+
+    config.registry['phantomjs_script'] = os.path.join(
+        here,
+        '../screenshot.js'
     )
 
 
