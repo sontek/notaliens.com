@@ -218,38 +218,49 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None,
         'size': limit
     }
 
-    if search_text or distance_settings:
-        query['query'] = {}
+    filters = []
 
     if search_text:
         search_text = search_text.lower()
-        query['query'] = {
-            'multi_match': {
-                'query': search_text,
-                'fields': ['first_name', 'last_name', 'email', 'name']
-            },
-        }
+
+        filters.append({
+            "or": [
+                {
+                    "term" : { "profile.first_name" : search_text }
+                },
+                {
+                    "term" : { "profile.last_name" : search_text }
+                },
+                {
+                    "term" : { "profile.skills.name" : search_text }
+                }
+            ]
+        })
 
     if distance_settings:
-        query['query']['filtered'] = {
-            'filter': {
-                'geo_distance': {
-                    'distance': '%smi' % distance_settings['distance'],
-                    'location': {
-                        'lat': distance_settings['lat'],
-                        'lon': distance_settings['lon']
-                    }
+        filters.append({
+            'geo_distance': {
+                'distance': '%smi' % distance_settings['distance'],
+                'location': {
+                    'lat': distance_settings['lat'],
+                    'lon': distance_settings['lon']
                 }
             }
-        }
+        })
 
     if available_for_work is not None:
-        if 'filtered' not in query['query']:
-            query['query']['filtered'] = {}
-
-        query['query']['filtered']['query'] = {
+        filters.append({
             'term': {'available_for_work': 'true'}
+        })
+
+
+    query['query'] = {
+        'filtered': {
+            'filter': {
+                'and': filters
+            }
         }
+    }
 
 
     results = es.search(query, fallback=fallback, index=USER_INDEX)
