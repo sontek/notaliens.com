@@ -254,13 +254,14 @@ def get_users_from_es(es, page, limit, fallback=None, search_text=None,
         })
 
 
-    query['query'] = {
-        'filtered': {
-            'filter': {
-                'and': filters
+    if filters:
+        query['query'] = {
+            'filtered': {
+                'filter': {
+                    'and': filters
+                }
             }
         }
-    }
 
 
     results = es.search(query, fallback=fallback, index=USER_INDEX)
