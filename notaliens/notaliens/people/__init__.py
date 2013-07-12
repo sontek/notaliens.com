@@ -1,6 +1,6 @@
 from pyramid.events import BeforeRender
-
-USER_INDEX = 'users'
+from notaliens.people.schemas import ProfileSchema
+from horus.interfaces import IProfileSchema
 
 
 def includeme(config):
@@ -8,6 +8,8 @@ def includeme(config):
         to_override='horus:templates/edit_profile.mako',
         override_with='notaliens:people/templates/edit_profile.mako'
     )
+
+    config.registry.registerUtility(ProfileSchema, IProfileSchema)
 
     config.include('notaliens.people.routes')
     config.add_subscriber(

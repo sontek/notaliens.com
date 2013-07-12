@@ -1,6 +1,8 @@
 from notaliens.log import perflog
-from notaliens.people import USER_INDEX
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
+
+USER_INDEX = 'users'
+
 
 user_mapping = {
     "user": {

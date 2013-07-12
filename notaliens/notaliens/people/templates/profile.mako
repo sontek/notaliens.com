@@ -2,9 +2,9 @@
 <div class="row">
   <div class="span2">
     % if request.user:
-      % if request.user.pk == user.pk:
+      % if request.user.pk == data['user'].pk:
         <div>
-          <a href="${request.route_url('edit_profile', user_id=user.pk)}"><button class="primary">Edit</button></a>
+          <a href="${request.route_url('edit_profile', user_id=data['user'].pk)}"><button class="primary">Edit</button></a>
         </div>
       % endif
     % endif

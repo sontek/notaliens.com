@@ -4,7 +4,7 @@ from notaliens.core.models import JsonSerializableMixin
 from notaliens.core.models.meta import Country
 from notaliens.core.models.meta import Language
 from notaliens.core.models.meta import Timezone
-from notaliens.people import USER_INDEX
+from notaliens.people.search import USER_INDEX
 from notaliens.identity.models import User
 from notaliens.cache.sa import FromCache
 from notaliens.cache.sa import RelationshipCache
