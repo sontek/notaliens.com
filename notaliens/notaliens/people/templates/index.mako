@@ -32,7 +32,11 @@
       </div>
       <div>
         <label class="checkbox">
-            <input type="checkbox" name="available_for_work"> Available for work?
+            % if 'available_for_work' in data:
+              <input type="checkbox" name="available_for_work" checked="checked"> Available for work?
+            % else:
+              <input type="checkbox" name="available_for_work"> Available for work?
+            % endif
         </label>
       </div>
   <button type="submit" class="btn">Search</button>

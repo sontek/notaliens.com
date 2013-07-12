@@ -64,6 +64,9 @@ def people_index(request):
         data['postal_code'] = postal_code
         data['distance'] = distance
 
+    if available_for_work is not None:
+        data['available_for_work'] = available_for_work
+
     return {
         'data': data
     }
