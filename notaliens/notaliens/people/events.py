@@ -12,9 +12,13 @@ def display_name(user):
 def display_location(user):
     city = user['profile']['city']
     state = user['profile']['state']
-    country = user['profile']['country']
+    country = None
+    
+    if 'country' in user['profile']:
+        user['profile']['country']
 
     nodes = []
+
     if city:
         nodes.append(city)
 

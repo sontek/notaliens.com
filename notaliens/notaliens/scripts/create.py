@@ -16,9 +16,8 @@ from pyramid.paster import (
 
 from notaliens.core.models import Base
 from notaliens.people.search import index_users
-from notaliens.people import USER_INDEX
+from notaliens.people.search import setup_user_index
 
-import pyelasticsearch
 import random
 
 try:
@@ -160,7 +159,7 @@ def generate_default_data(session):
 
     users = [admin]
 
-    for x in range(0, 22):
+    for x in range(0, 50):
         username = '%s%s' % (random.choice(user_names), x)
         user = User(
             username=username,
@@ -175,7 +174,8 @@ def generate_default_data(session):
                       'Davis', 'White', 'Garcia']
 
         postal_codes = [
-            69008, 94061, 32571, 90210, 13010, 50304, 78748, '02627', 999077
+            69008, 94061, 32571, 90210, 13010, 50304, 78748, '02627', 
+            94160, 95062, 36675, 75017, 92050
         ]
 
         profile = UserProfile(
@@ -217,14 +217,7 @@ def main(argv=sys.argv):
     db_session.commit()
 
     if request.search_settings['enabled']:
-        try:
-            request.es.delete_index(USER_INDEX)
-        except pyelasticsearch.exceptions.ElasticHttpNotFoundError:
-            pass
-
-        request.es.put_mapping(USER_INDEX, 'user', {
-        })
-
+        setup_user_index(request)
         index_users(request, data['users'])
 
 if __name__ == '__main__':

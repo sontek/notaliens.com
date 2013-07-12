@@ -58,5 +58,6 @@ setup(
     notaliens_update_geoip = notaliens.scripts.geoip:update
     notaliens_update_geoip_csv = notaliens.scripts.geoip_csv:update
     notaliens_rebuild_index = notaliens.scripts.reindex:main
-    """
+    notaliens_refresh_user_location = notaliens.scripts.refresh_user_location:update
+    """  # nopep8
 )

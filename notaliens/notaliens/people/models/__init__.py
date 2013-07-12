@@ -8,6 +8,7 @@ from notaliens.people import USER_INDEX
 from notaliens.identity.models import User
 from notaliens.cache.sa import FromCache
 from notaliens.cache.sa import RelationshipCache
+from notaliens.core.models.meta import GeoRegion
 from notaliens.log import perflog
 
 
@@ -255,3 +256,32 @@ distance_settings=None):
 
     else:
         return results
+
+def refresh_users_location(db_session):
+    regions = db_session.query(GeoRegion).all()
+
+    regions_dict = {}
+
+    for region in regions:
+        regions_dict[region.postal_code] = region
+
+    users = db_session.query(UserProfile).all()
+
+    countries_dict = {}
+    countries = db_session.query(Country).all()
+
+    for country in countries:
+        countries_dict[country.alpha2] = country
+
+    for user in users:
+        try:
+            postal_data = regions_dict[user.postal]
+            user.latitude = postal_data.latitude
+            user.longitude = postal_data.longitude
+            user.city = postal_data.city
+            user.state = postal_data.region
+            user.country = countries_dict[postal_data.country]
+        except KeyError:
+            logger.warn("Couldn't find info for %s" % user.postal)
+
+        db_session.add(user)
