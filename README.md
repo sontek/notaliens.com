@@ -75,6 +75,7 @@ Before running buildout, you need to make sure you have postgresql installed.
     $ bin/notaliens_create_db notaliens/development.ini
     $ bin/notaliens_update_geoip notaliens/development.ini
     $ bin/notaliens_update_geoip_csv notaliens/development.ini
+    $ bin/pserve notaliens/development.ini
 
 
 
