@@ -14,8 +14,8 @@
       <div class="row">
         <div class="span8">
           <h2>${data['user'].profile.display_name}</h2>
-          <em>${data['user'].profile.one_liner}</em>
           <h4>${data['user'].profile.location}</h4>
+          <em>${data['user'].profile.one_liner}</em>
           % if data['user'].profile.description:
               ${data['user'].profile.description}
           % else:

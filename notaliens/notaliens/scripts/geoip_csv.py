@@ -39,7 +39,7 @@ def update(argv=sys.argv):
     """
     Download the GeoIP database from the URL provided under the config key
     `geoip.city.source` and save it under the path provided by the config key
-    `geoip.city.db`.
+    `geoip.city.destination`.
 
     """
     if len(argv) != 2:
