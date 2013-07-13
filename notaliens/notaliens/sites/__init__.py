@@ -1,6 +1,5 @@
 from pyramid.events import BeforeRender
 
-
 def includeme(config):
     config.include('notaliens.sites.routes')
 
@@ -8,3 +7,4 @@ def includeme(config):
         'notaliens.sites.events.add_renderers',
         BeforeRender
     )
+
