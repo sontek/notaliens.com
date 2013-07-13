@@ -20,6 +20,27 @@ class TestUserProfile(unittest.TestCase):
 
         assert profile.display_name == 'John Anderson'
 
+    def test_location(self):
+        from notaliens.people.models import UserProfile
+        from notaliens.core.models.meta import Country
+
+        profile = UserProfile()
+
+        assert profile.location == ""
+
+        profile.city = "Sometown"
+
+        assert profile.location == "Sometown"
+
+        profile.state = "California"
+
+        assert profile.location == "Sometown, California"
+
+        country = Country(alpha2="US")
+        profile.country = country
+
+        assert profile.location == "Sometown, California, US"
+
     def test_json(self):
         from notaliens.people.models import UserProfile
 
