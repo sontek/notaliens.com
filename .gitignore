@@ -33,6 +33,10 @@ pip-log.txt
 #Translations
 *.mo
 
+# Vagrant
+Vagrantfile
+.vagrant
+
 #Mr Developer
 .mr.developer.cfg
 

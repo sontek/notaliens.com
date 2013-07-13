@@ -128,6 +128,7 @@ def setup_global_data(session):
 def generate_default_data(session):
     from notaliens.identity.models import User
     from notaliens.people.models import UserProfile
+    from notaliens.sites.models import Site
 
     global_data = setup_global_data(session)
 
@@ -141,6 +142,12 @@ def generate_default_data(session):
     skill_strings = input("Do you have any skills (comma separated)? ")
 
     skill_strings = set([s.strip().lower() for s in skill_strings.split(',')])
+
+    site = Site(
+        url='http://docs.pylonsproject.org/projects/pyramid/en/1.4-branch/',
+        description='Pyramid homepage',
+        title='Pyramid Project'
+    )
 
     admin = User(
         username=username,
@@ -159,6 +166,7 @@ def generate_default_data(session):
     for skill in skill_strings:
         profile.skills.append(SkillTag(name=skill))
 
+    session.add(site)
     session.add(admin)
     session.add(profile)
     session.flush()
