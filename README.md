@@ -1,4 +1,4 @@
-nlotaliens.com
+notaliens.com
 =============
 
 A website for show casing pyramid powered sites and the hackers that use it!
