@@ -59,11 +59,8 @@ Before running buildout, you need to make sure you have postgresql installed.
 
 ## Ubuntu
 
-    $ sudo apt-get install postgresql postgresql-dev
-    $ sudo su - postgres
-    $ initdb
-    $ exit
-    
+    $ sudo apt-get install postgresql libpq-dev python-dev
+    $ sudo apt-get install libtiff4-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms1-dev libwebp-dev
 
 ## Finally
 
@@ -75,9 +72,14 @@ Before running buildout, you need to make sure you have postgresql installed.
     $ bin/notaliens_create_db notaliens/development.ini
     $ bin/notaliens_update_geoip notaliens/development.ini
     $ bin/notaliens_update_geoip_csv notaliens/development.ini
+
+Running the application server:
+
     $ bin/pserve notaliens/development.ini
 
+Running the task queue worker:
 
+    $ bin/notaliens_task_queue notaliens/development.ini
 
 We also have support for caching SQL queries via redis and using elasticsearch
 for full text search, so use your distro to install those if you would like

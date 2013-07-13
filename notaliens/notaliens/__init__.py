@@ -14,6 +14,7 @@ def setup_includes(config):
     config.include('notaliens.sites', route_prefix='/sites')
     config.include('notaliens.jobs', route_prefix='/jobs')
     config.include('notaliens.identity', route_prefix='/identity')
+    config.include('notaliens.sites', route_prefix='/sites')
     config.include('notaliens.geoip')
 
 
@@ -38,6 +39,10 @@ def main(global_config, **settings):
         '../screenshot.js'
     )
 
+    config.registry['screenshots_folder'] = os.path.join(
+        here,
+        'static/screenshots'
+    )
 
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('static_deform', 'deform:static')
