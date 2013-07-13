@@ -62,30 +62,26 @@ class TestUserProfileModels(unittest.TestCase):
 
         query2 = mock.Mock()
         options2 = mock.Mock()
+        query2.options = options2
 
         query3 = mock.Mock()
         options3 = mock.Mock()
         query3.options = options3
 
-        query2.options = options2
-
         options.return_value = query2
-
         options2.return_value = query3
+
         query = mock.Mock()
         query.return_value = query
-
-        filter_ = mock.Mock()
-
         query.options = options
 
+        filter_ = mock.Mock()
         filter_.return_value = query
 
         query.filter = filter_
 
         session = mock.Mock()
         session.query = query
-
 
 
         with mock.patch('notaliens.people.models.joinedload') as joinedload:
