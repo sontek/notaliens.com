@@ -1,4 +1,5 @@
 from sqlalchemy import engine_from_config
+from pyres import ResQ
 from hem.interfaces import IDBSession
 from notaliens.core.interfaces import IDBSessionMaker
 from notaliens.core.models import DBSession
@@ -24,6 +25,9 @@ def get_db_session(request):
     return session
 
 
+def get_resq(request):
+    return ResQ()
+
 def includeme(config):
 
     engine = engine_from_config(
@@ -38,5 +42,5 @@ def includeme(config):
     config.registry.registerUtility(get_db_session, IDBSession)
 
     config.add_request_method(get_db_session, 'db_session', reify=True)
-
+    config.add_request_method(get_resq, 'resq', reify=True)
     config.include('notaliens.core.routes')
