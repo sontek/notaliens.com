@@ -39,7 +39,7 @@ def main(global_config, **settings):
         '../screenshot.js'
     )
 
-    config.registry['screenshots.folder'] = os.path.join(
+    config.registry['screenshots_folder'] = os.path.join(
         here,
         'static/screenshots'
     )

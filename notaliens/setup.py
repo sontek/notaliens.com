@@ -25,7 +25,8 @@ requires = [
     'requests',
     'six',
     'sqlalchemy',
-    'validictory'
+    'validictory',
+    'pyres'
 ]
 entry_points = """\
 [paste.app_factory]
@@ -37,6 +38,7 @@ notaliens_update_geoip = notaliens.scripts.geoip:update
 notaliens_update_geoip_csv = notaliens.scripts.geoip_csv:update
 notaliens_rebuild_index = notaliens.scripts.reindex:main
 notaliens_refresh_location = notaliens.scripts.refresh_user_location:update
+notaliens_task_queue = notaliens.tasks.worker:main
 """  # nopep8
 
 setup(
