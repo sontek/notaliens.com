@@ -26,7 +26,8 @@ requires = [
     'six',
     'sqlalchemy',
     'validictory',
-    'pyres'
+    'pyres',
+    'pillow'
 ]
 entry_points = """\
 [paste.app_factory]
