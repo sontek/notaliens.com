@@ -12,8 +12,13 @@
 </form>
 
 <div class="sites">
-    % for site in data['sites']:
-    <div class="site">
+    % for i, site in enumerate(data['sites']):
+      % if i % 5 == 0:
+        <div class="site">
+      % else:
+        <div class="site pad20">
+        <br class="clear" />
+      % endif
         <div class="title">
             <a href="${request.route_url('sites_details', site_pk=site['pk'])}">${site['title']}</a>
             <p>${site['description']}</p>
@@ -23,7 +28,7 @@
     % endfor
 </div>
 
-<br class="clear" /.
+<br class="clear" />
 
 <div class="pagination">
   <ul>

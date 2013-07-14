@@ -9,6 +9,10 @@ div.skills {
   padding-top: 10px;
 }
 
+div.sites {
+  max-width: 1024px;;
+}
+
 div.site {
   max-width: 300px;
   max-height: 300px;
@@ -24,4 +28,9 @@ div.site img {
 
 br.clear {
   clear: both;
+}
+
+.pad20 {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
 }

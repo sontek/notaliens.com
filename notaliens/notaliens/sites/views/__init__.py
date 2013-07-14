@@ -2,6 +2,7 @@ from pyramid.view import view_config
 
 from notaliens.sites.models import get_site_by_pk
 from notaliens.sites.models import get_sites
+from notaliens.sites.models import get_sites_from_db
 from notaliens.sites.models import Site
 from notaliens.tasks.sites import CaptureScreenshot
 
@@ -76,4 +77,10 @@ def sites_new_view(request):
         request.db_session.commit()
 
         CaptureScreenshot.enqueue(request, site)
+        get_sites_from_db(
+            request.db_session,
+            0,
+            50
+        ).invalidate()
+
     return {}

@@ -83,7 +83,7 @@ def get_sites_from_db(session, page, limit, search_text=None):
         offset = page * limit
         query = query.offset(offset)
 
-    return [site for site in query]
+    return query
 
 @perflog()
 def get_site_count_from_db(session):
