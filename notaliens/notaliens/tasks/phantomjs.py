@@ -1,7 +1,4 @@
-import logging
 from subprocess import call
-
-logger = logging.getLogger(__name__)
 
 def take_screenshot(data):
     folder = data['folder']
@@ -10,6 +7,8 @@ def take_screenshot(data):
     url = data['url']
     pk = data['pk']
 
-    logger.info("Calling %s with %s, %s, %s"
-                % (pjs, script, url, '%s/site_%s.png' % (folder, pk)))
-    call([pjs, script, url, '%s/site_%s.png' % (folder, pk)])
+    path = '%s/site_%s.png' % (folder, pk)
+    call([pjs, script, url, path])
+
+    return path
+

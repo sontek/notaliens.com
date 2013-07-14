@@ -143,12 +143,6 @@ def generate_default_data(session):
 
     skill_strings = set([s.strip().lower() for s in skill_strings.split(',')])
 
-    site = Site(
-        url='http://docs.pylonsproject.org/projects/pyramid/en/1.4-branch/',
-        description='Pyramid homepage',
-        title='Pyramid Project'
-    )
-
     admin = User(
         username=username,
         email=email,
@@ -165,6 +159,13 @@ def generate_default_data(session):
 
     for skill in skill_strings:
         profile.skills.append(SkillTag(name=skill))
+
+    site = Site(
+        owner_pk=admin.pk,
+        url='http://docs.pylonsproject.org/projects/pyramid/en/1.4-branch/',
+        description='Pyramid homepage',
+        title='Pyramid Project'
+    )
 
     session.add(site)
     session.add(admin)
