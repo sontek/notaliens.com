@@ -45,11 +45,12 @@ def people_index(request):
         if postal_code and distance:
             region = get_region_by_postal(request.db_session, postal_code)
 
-            distance_settings = {
-                'distance': distance,
-                'lat': region.latitude,
-                'lon': region.longitude
-            }
+            if region:
+                distance_settings = {
+                    'distance': distance,
+                    'lat': region.latitude,
+                    'lon': region.longitude
+                }
 
 
     data = get_users(

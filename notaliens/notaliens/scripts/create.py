@@ -218,6 +218,7 @@ def generate_default_data(session):
             last_name=random.choice(last_names),
             one_liner='',
             postal=random.choice(postal_codes),
+            available_for_work=random.choice([True, False])
         )
 
         amount_of_skills = random.randint(1, 8)
