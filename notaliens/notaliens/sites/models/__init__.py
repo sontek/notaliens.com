@@ -4,16 +4,30 @@ from notaliens.core.models import JsonSerializableMixin
 from notaliens.cache.sa import FromCache
 from notaliens.log import perflog
 
-
+from sqlalchemy import ForeignKey
+from sqlalchemy import or_
+from sqlalchemy import Table
 from sqlalchemy import Column
 from sqlalchemy import func
 from sqlalchemy.types import UnicodeText
 from sqlalchemy.types import Unicode
-from sqlalchemy import or_
+from sqlalchemy.types import Integer
+from sqlalchemy.orm import relationship
 
 import logging
 
 logger = logging.getLogger(__name__)
+
+site_tags = Table(
+    'site_tags',
+    Base.metadata,
+    Column('site_pk', Integer, ForeignKey('site.pk')),
+    Column('site_tag_pk', Integer, ForeignKey('site_tag.pk')),
+)
+
+class SiteTag(Base, JsonSerializableMixin, TranslatableMixin):
+    __translatables__ = ['name']
+    name = Column(UnicodeText, nullable=False, unique=True)
 
 
 class Site(Base, JsonSerializableMixin, TranslatableMixin):
@@ -25,6 +39,9 @@ class Site(Base, JsonSerializableMixin, TranslatableMixin):
     url = Column(Unicode(255), nullable=False)
     description = Column(UnicodeText, nullable=False)
     title = Column(UnicodeText, nullable=False)
+    tags = relationship("SiteTag", secondary=site_tags)
+
+    owner_pk = Column(Integer, ForeignKey('user.pk'))
 
     def __json__(self, request):
         results = JsonSerializableMixin.__json__(self, request)
