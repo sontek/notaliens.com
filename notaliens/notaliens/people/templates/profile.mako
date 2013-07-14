@@ -27,8 +27,8 @@
           </div>
         </div>
         <div class="span2">
-          <h4>People Near By</h4>
           % if 'near_by' in data:
+            <h4>People Near By</h4>
             % for user in data['near_by']:
               <div>
                   <img src="${gravatar_url(user['email'], size=40)}" />

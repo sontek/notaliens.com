@@ -93,14 +93,15 @@ def people_profile_view(request):
 
     data = {}
 
-    data['near_by'] = [u for u in get_users(
-        request,
-        distance_settings={
-            'distance': 50,
-            'lat': region.latitude,
-            'lon': region.longitude
-        },
-    )['users'] if u['pk'] != user.pk][:5]
+    if region:
+        data['near_by'] = [u for u in get_users(
+            request,
+            distance_settings={
+                'distance': 50,
+                'lat': region.latitude,
+                'lon': region.longitude
+            },
+        )['users'] if u['pk'] != user.pk][:5]
 
     data['user'] = user
 

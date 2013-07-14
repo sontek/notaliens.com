@@ -2,6 +2,7 @@ from sqlalchemy import Column
 from sqlalchemy.types import Unicode
 from sqlalchemy.types import Integer
 from sqlalchemy.types import Float
+from sqlalchemy.orm.exc import NoResultFound
 
 from notaliens.core.models import Base
 from notaliens.core.models.translation import TranslatableMixin
@@ -51,9 +52,12 @@ class Timezone(Base, TranslatableMixin):
 
 
 def get_region_by_postal(session, postal_code):
-    region = session.query(GeoRegion).filter(
-        GeoRegion.postal_code == postal_code
-    ).one()
+    try:
+        region = session.query(GeoRegion).filter(
+            GeoRegion.postal_code == postal_code
+        ).one()
+    except NoResultFound:
+        return None
 
     return region
 
