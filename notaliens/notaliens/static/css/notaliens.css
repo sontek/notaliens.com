@@ -8,3 +8,20 @@ span.tag {
 div.skills {
   padding-top: 10px;
 }
+
+div.site {
+  max-width: 300px;
+  max-height: 300px;
+  float: left;
+}
+
+div.site img {
+  max-height: 300px;
+  padding: 10px;
+  margin: 10px;
+  border: solid 1px #CCC;
+}
+
+br.clear {
+  clear: both;
+}

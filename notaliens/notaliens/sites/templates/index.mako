@@ -16,11 +16,14 @@
     <div class="site">
         <div class="title">
             <a href="${request.route_url('sites_details', site_pk=site['pk'])}">${site['title']}</a>
+            <p>${site['description']}</p>
         </div>
         <div class="screenshot"><img src="${request.static_url('notaliens:static/screenshots/site_%s.png' % site['pk'])}"/></div>
     </div>
     % endfor
 </div>
+
+<br class="clear" /.
 
 <div class="pagination">
   <ul>
