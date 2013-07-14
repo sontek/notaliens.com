@@ -68,6 +68,7 @@ def sites_new_view(request):
         title = request.POST.get('title')
 
         site = Site(
+            owner_pk=request.user.pk,
             url=url,
             description=description,
             title=title,
