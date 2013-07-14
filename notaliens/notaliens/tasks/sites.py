@@ -27,7 +27,7 @@ class CaptureScreenshot(object):
     def perform(task_data):
         log.info('Performing screenshot capture for Site(pk=%s)' % task_data['pk'])
         image_path = take_screenshot(task_data)
-        generate_thumbnail(task_data, image_path, (400,400))
+        generate_thumbnail(task_data, image_path, (320,240))
 
 def generate_thumbnail(data, image_path, size):
     image = Image.open(image_path)
