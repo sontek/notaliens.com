@@ -1,10 +1,22 @@
 import os
+import sys
 
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
+
+is_pypy = '__pypy__' in sys.builtin_module_names
+
+
+def get_postgres_dependencies():
+    if is_pypy:
+#        psyco = 'psycopg2ct'
+        return ['psycopg2cffi']
+    else:
+        return ['psycopg2']
+
 
 requires = [
     'colorama',
@@ -13,7 +25,6 @@ requires = [
     'gunicorn',
     'horus',
     'mako',
-    'psycopg2',
     'pycountry>=0.17',
     'pyelasticsearch',
     'pygeoip',
@@ -27,7 +38,8 @@ requires = [
     'sqlalchemy',
     'validictory',
     'pyres'
-]
+] + get_postgres_dependencies()
+
 entry_points = """\
 [paste.app_factory]
 main = notaliens:main
