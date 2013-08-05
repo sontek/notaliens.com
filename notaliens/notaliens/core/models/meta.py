@@ -7,7 +7,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from notaliens.core.models import Base
 from notaliens.core.models.translation import TranslatableMixin
 from notaliens.core.models import JsonSerializableMixin
-
+from notaliens.log import perflog
 
 class Country(Base, TranslatableMixin, JsonSerializableMixin):
     __translatables__ = ['name', 'official_name']
@@ -51,6 +51,7 @@ class Timezone(Base, TranslatableMixin):
     name = Column(Unicode(128), nullable=False)
 
 
+@perflog()
 def get_region_by_postal(session, postal_code):
     try:
         region = session.query(GeoRegion).filter(
