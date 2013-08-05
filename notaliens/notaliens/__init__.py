@@ -2,8 +2,17 @@ from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 
 import os
+import sys
 
 here = os.path.dirname(__file__)
+is_pypy = '__pypy__' in sys.builtin_module_names
+
+if is_pypy:
+    #from psycopg2ct import compat
+    #compat.register()
+    from psycopg2cffi import compat
+    compat.register()
+
 
 def setup_includes(config):
     config.include('notaliens.cache')
