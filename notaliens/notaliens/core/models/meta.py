@@ -22,7 +22,7 @@ class GeoRegion(Base):
     country = Column(Unicode(128), nullable=False)
     region = Column(Unicode(128), nullable=True)
     city = Column(Unicode(128), nullable=True)
-    postal_code = Column(Unicode(128), nullable=True)
+    postal_code = Column(Unicode(128), index=True, nullable=True)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     metro_code = Column(Unicode(128), nullable=True)
