@@ -12,7 +12,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 
-
+from notaliens.core.models.meta import Country
 from notaliens.core.models.meta import GeoRegion
 from notaliens.people.models import refresh_users_location
 
@@ -88,21 +88,16 @@ def update(argv=sys.argv):
     log.info("Creating the GeoRegion table")
     GeoRegion.__table__.create(engine)
 
+    countries = {}
+    for country in db_session.query(Country).all():
+        countries[country.alpha2] = country
+
     if six.PY3:
         infile = open(final_path, 'r', newline='', encoding='latin1')
     else:
         infile = open(final_path, 'rb')
 
     with infile as f:
-        country = 1
-        region = 2
-        city = 3
-        postal_code = 4
-        latitude = 5
-        longitude = 6
-        metro_code = 7
-        area_code = 8
-
         reader = csv_reader(f, delimiter=',')
 
         rows = list(reader)
@@ -111,12 +106,19 @@ def update(argv=sys.argv):
         postals = {}
 
         for count, (
-            locid, country, region, city, postal_code, latitude, longitude,
-                metro_code, area_code
+            locid, country_code, region, city, postal_code, latitude,
+                longitude, metro_code, area_code
         ) in enumerate(rows[2:]):
+            if country_code not in countries:
+                # Should always be ok, only ones not there are anonymous
+                # proxy, and regions like EU
+                print("Country Code %s isn't in our DB" % country_code)
+                continue
+            else:
+                country_obj = countries[country_code]
 
             ip = GeoRegion(
-                country=country,
+                country=country_obj,
                 region=region,
                 city=city,
                 postal_code=postal_code,

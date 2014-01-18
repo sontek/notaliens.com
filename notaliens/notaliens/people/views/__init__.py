@@ -90,7 +90,11 @@ def people_profile_view(request):
         request.matchdict['username']
     )
 
-    region = get_region_by_postal(request.db_session, user.profile.postal)
+    region = get_region_by_postal(
+        request.db_session,
+        user.profile.postal,
+        user.profile.country_pk
+    )
 
     data = {}
 
@@ -113,8 +117,8 @@ def people_profile_view(request):
 
 def handle_profile_update(event):
     """ This function is fired off from the horus profile view.
-    We have extended the profile to have extra data and we handle that data 
-    here 
+    We have extended the profile to have extra data and we handle that data
+    here
     """
     request = event.request
     context = request.context
