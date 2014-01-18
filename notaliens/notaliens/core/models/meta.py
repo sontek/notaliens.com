@@ -81,3 +81,11 @@ def get_country_by_alpha2(session, alpha2):
     ).one()
 
     return country
+
+
+def get_all_countries(session):
+    countries = session.query(Country).order_by(
+        Country.name
+    ).all()
+
+    return countries
