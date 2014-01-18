@@ -3,6 +3,7 @@ import logging
 import os
 import requests
 import sys
+import six
 import csv
 
 from os import listdir
@@ -15,11 +16,10 @@ from sqlalchemy.orm import sessionmaker
 from notaliens.core.models.meta import GeoRegion
 from notaliens.people.models import refresh_users_location
 
-#py3
-try:
-    from cStringIO import StringIO
-except ImportError:
+if six.PY3:
     from io import BytesIO as StringIO
+else:
+    from cStringIO import StringIO
 
 from pyramid.paster import get_appsettings
 from pyramid.paster import setup_logging
@@ -33,6 +33,12 @@ def usage(argv):
     print('usage: %s <config_uri>\n'
           '(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
+
+
+def latin1_csv_reader(latin1_data, dialect=csv.excel, **kwargs):
+    csv_reader = csv.reader(latin1_data, dialect=dialect, **kwargs)
+    for row in csv_reader:
+        yield [unicode(cell, 'latin1') for cell in row]
 
 
 def update(argv=sys.argv):
@@ -77,7 +83,7 @@ def update(argv=sys.argv):
     log.info("Creating the GeoRegion table")
     GeoRegion.__table__.create(engine)
 
-    with open(final_path, 'r', newline='', encoding='latin1') as f:
+    with open(final_path, 'r') as f:
         country = 1
         region = 2
         city = 3
@@ -87,8 +93,7 @@ def update(argv=sys.argv):
         metro_code = 7
         area_code = 8
 
-        reader = csv.reader(f, delimiter=',')
-
+        reader = latin1_csv_reader(f, delimiter=',')
         rows = list(reader)
         total_rows = len(rows)
 

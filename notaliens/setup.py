@@ -25,19 +25,20 @@ requires = [
     'gunicorn',
     'horus',
     'mako',
+    'pillow',
     'pycountry>=0.17',
     'pyelasticsearch',
     'pygeoip',
     'pyramid>=1.4.2',
     'pyramid_debugtoolbar',
     'pyramid_mailer',
+    'pyres',
     'pytz',
     'redis',
     'requests',
     'six',
     'sqlalchemy',
     'validictory',
-    'pyres'
 ] + get_postgres_dependencies()
 
 entry_points = """\
