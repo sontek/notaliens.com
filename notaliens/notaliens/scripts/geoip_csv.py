@@ -40,6 +40,11 @@ def latin1_csv_reader(latin1_data, dialect=csv.excel, **kwargs):
     for row in csv_reader:
         yield [unicode(cell, 'latin1') for cell in row]
 
+if six.PY3:
+    csv_reader = csv.reader
+else:
+    csv_reader = latin1_csv_reader
+
 
 def update(argv=sys.argv):
     """
@@ -83,7 +88,12 @@ def update(argv=sys.argv):
     log.info("Creating the GeoRegion table")
     GeoRegion.__table__.create(engine)
 
-    with open(final_path, 'r') as f:
+    if six.PY3:
+        infile = open(final_path, 'r', newline='', encoding='latin1')
+    else:
+        infile = open(final_path, 'rb')
+
+    with infile as f:
         country = 1
         region = 2
         city = 3
@@ -93,7 +103,8 @@ def update(argv=sys.argv):
         metro_code = 7
         area_code = 8
 
-        reader = latin1_csv_reader(f, delimiter=',')
+        reader = csv_reader(f, delimiter=',')
+
         rows = list(reader)
         total_rows = len(rows)
 
