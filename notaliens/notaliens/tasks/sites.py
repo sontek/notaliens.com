@@ -4,37 +4,40 @@ from PIL import Image
 
 log = logging.getLogger(__name__)
 
+
 class CaptureScreenshot(object):
     queue = 'screenshots'
 
     @classmethod
-    def enqueue(cls, request, site):
+    def enqueue(cls, request, site_pk, site_url):
         """
         Build the task data and enqueue the phantonjs take_screenshot
         task for the given site.
         """
         task_data = {
-            'folder':request.registry['screenshots_folder'],
-            'pjs':request.registry['phantomjs_path'],
-            'script':request.registry['phantomjs_script'],
-            'pk':site.pk,
-            'url':site.url,
+            'folder': request.registry['screenshots_folder'],
+            'pjs': request.registry['phantomjs_path'],
+            'script': request.registry['phantomjs_script'],
+            'pk': site_pk,
+            'url': site_url,
         }
         request.resq.enqueue(cls, task_data)
-        log.info('Queued screenshot capture for Site(pk=%s)' % site.pk)
+        log.info('Queued screenshot capture for Site(pk=%s)' % site_pk)
 
     @staticmethod
     def perform(task_data):
-        log.info('Performing screenshot capture for Site(pk=%s)' % task_data['pk'])
+        log.info(
+            'Performing screenshot capture for Site(pk=%s)' % task_data['pk'])
         image_path = take_screenshot(task_data)
-        generate_thumbnail(task_data, image_path, (320,240))
+        generate_thumbnail(task_data, image_path, (320, 240))
+
 
 def generate_thumbnail(data, image_path, size):
     image = Image.open(image_path)
     thumbnail = image.copy()
     thumbnail_path = '%s/site_%s.thumbnail.png' % (data['folder'], data['pk'])
 
-    def grow(size, color=(255,255,255,0)):
+    def grow(size, color=(255, 255, 255, 0)):
         n_x, n_y = size
         x, y = thumbnail.size
 
@@ -51,9 +54,9 @@ def generate_thumbnail(data, image_path, size):
     x, y = thumbnail.size
 
     if x > n_x or y > n_y:
-       scale(size)
+        scale(size)
 
     x, y = thumbnail.size
     if x < n_x or y < n_y:
-       grow(size)
+        grow(size)
 

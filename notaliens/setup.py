@@ -32,6 +32,7 @@ requires = [
     'pyramid>=1.4.2',
     'pyramid_debugtoolbar',
     'pyramid_mailer',
+    'pyramid_tm',
     'pyres',
     'pytz',
     'redis',
@@ -39,6 +40,7 @@ requires = [
     'six',
     'sqlalchemy',
     'validictory',
+    'zope.sqlalchemy'
 ] + get_postgres_dependencies()
 
 entry_points = """\

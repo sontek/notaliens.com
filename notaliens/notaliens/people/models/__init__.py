@@ -63,7 +63,7 @@ class UserProfile(Base, TranslatableMixin, JsonSerializableMixin):
     user_pk = Column(Integer, ForeignKey('user.pk'))
     available_for_work = Column(Boolean, nullable=False, default=False)
     description = Column(UnicodeText, nullable=True)
-    one_liner = Column(Unicode(140), nullable=False)
+    one_liner = Column(Unicode(140), nullable=True)
     first_name = Column(Unicode(255), nullable=True)
     last_name = Column(Unicode(255), nullable=True)
     blog_rss = Column(Unicode(255), nullable=True)
@@ -335,6 +335,7 @@ def refresh_users_location(db_session):
 
         db_session.add(user)
 
+
 def refresh_user_location(db_session, user):
     region = get_region_by_postal(db_session, user.profile.postal)
     country = get_country_by_alpha2(db_session, region.country)
@@ -349,3 +350,8 @@ def refresh_user_location(db_session, user):
         db_session.add(user)
     except KeyError:
         logger.warn("Couldn't find info for %s" % user.postal)
+
+
+def handle_registration(event):
+    event.user.profile = UserProfile()
+    event.request.db_session.add(event.user.profile)

@@ -2,11 +2,12 @@ from pyramid.view import view_config
 
 from notaliens.sites.models import get_site_by_pk
 from notaliens.sites.models import get_sites
-from notaliens.sites.models import get_sites_from_db
 from notaliens.sites.models import Site
 from notaliens.tasks.sites import CaptureScreenshot
 
 import math
+import transaction
+
 
 @view_config(
     route_name='sites_index',
@@ -43,6 +44,7 @@ def sites_index(request):
         'data': data
     }
 
+
 @view_config(
     route_name='sites_details',
     renderer='notaliens:sites/templates/details.mako'
@@ -56,6 +58,7 @@ def sites_details_view(request):
     return {
         'site': site
     }
+
 
 @view_config(
     route_name='sites_new',
@@ -75,13 +78,10 @@ def sites_new_view(request):
         )
         request.db_session.add(site)
         request.db_session.flush()
-        request.db_session.commit()
+        site_pk = site.pk
+        site_url = site.url
 
-        CaptureScreenshot.enqueue(request, site)
-        get_sites_from_db(
-            request.db_session,
-            0,
-            50
-        ).invalidate()
+        CaptureScreenshot.enqueue(request, site_pk, site_url)
+        #TODO: When cache is added back, invalidate sites here
 
     return {}

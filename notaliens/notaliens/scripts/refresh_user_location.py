@@ -1,8 +1,6 @@
 import logging
 import os
-import requests
 import sys
-import csv
 
 from sqlalchemy import engine_from_config
 from sqlalchemy.orm import scoped_session

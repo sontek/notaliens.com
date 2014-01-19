@@ -15,6 +15,8 @@ if is_pypy:
 
 
 def setup_includes(config):
+    config.include('pyramid_mailer')
+    config.include('pyramid_tm')
     config.include('notaliens.cache')
     config.include('notaliens.log')
     config.include('notaliens.core')

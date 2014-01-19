@@ -6,6 +6,7 @@ from sqlalchemy.orm import class_mapper
 from sqlalchemy.orm.properties import RelationshipProperty
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
 
 import sqlalchemy as sa
 
@@ -15,13 +16,14 @@ from datetime import time
 
 import re
 
-from notaliens.cache.sa import query_callable
-from notaliens.cache import regions
+#from notaliens.cache.sa import query_callable
+#from notaliens.cache import regions
 from six import text_type
 
 # TODO: Improve cache of SQL wueries
 # DBSession = scoped_session(sessionmaker(query_cls=query_callable(regions)))
-DBSession = scoped_session(sessionmaker())
+DBSession = scoped_session(
+    sessionmaker(extension=ZopeTransactionExtension()))
 
 
 class UTCNow(expression.FunctionElement):
