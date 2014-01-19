@@ -9,6 +9,7 @@ from notaliens.core.models.meta import Timezone
 import colander
 import deform
 
+
 @colander.deferred
 def profile_default(node, kw):
     request = kw.get('request')
@@ -91,6 +92,7 @@ def timezone_widget(node, kw):
 
     return ChosenSingleWidget(values=choices)
 
+
 @colander.deferred
 def timezone_default(node, kw):
     """ This will set the user's current selected timezone if they have one """
@@ -99,6 +101,7 @@ def timezone_default(node, kw):
     if request.context.profile:
         if request.context.profile.timezone_pk:
             return str(request.context.profile.timezone_pk)
+
 
 @colander.deferred
 def skill_widget(node, kw):

@@ -154,5 +154,3 @@ def handle_profile_update(event):
         refresh_user_location(request.db_session, context)
 
     index_users(request, [context])
-
-    request.db_session.commit()
