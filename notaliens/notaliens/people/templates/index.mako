@@ -15,17 +15,27 @@
         % else:
           <input type="text" class="input-medium search-query" name="postal_code">
         % endif
+        <select name="country">
+          % for country in data['countries']:
+              % if 'country' in data and country.pk == data['country']:
+                  <option value="${country.pk}" selected>${country.name}</option>
+              % else:
+                  <option value="${country.pk}">${country.name}</option>
+              % endif
+          % endfor
+        </select>
+
         <label>Within</label>
         <select name="distance">
           % for i in [30, 60, 120]:
               % if 'distance' in data:
-                  % if data['distance'] == i:  
-                    <option selected="selected" value="${i}">${i}</option>
+                  % if data['distance'] == i:
+                    <option selected="selected" value="${i}">${i} Miles</option>
                   % else:
-                    <option value="${i}">${i}</option>
+                    <option value="${i}">${i} Miles</option>
                   % endif
               % else:
-                  <option value="${i}">${i}</option>
+                  <option value="${i}">${i} Miles</option>
               % endif
           % endfor
         </select>

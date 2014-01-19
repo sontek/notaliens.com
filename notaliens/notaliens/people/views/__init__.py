@@ -3,6 +3,7 @@ from pyramid.settings import asbool
 from notaliens.people.models import get_user_by_username
 from notaliens.people.models import get_users
 from notaliens.core.models.meta import get_region_by_postal
+from notaliens.core.models.meta import get_all_countries
 from notaliens.people.models import refresh_user_location
 from notaliens.people.search import index_users
 
@@ -25,6 +26,7 @@ def people_index(request):
     postal_code = None
     distance = None
     available_for_work = None
+    country = None
 
     if request.method == 'GET':
         page = int(request.matchdict.get('page', page))
@@ -32,6 +34,7 @@ def people_index(request):
         search_text = request.POST.get('search', '').strip()
         postal_code = request.POST.get('postal_code', '').strip()
         distance = request.POST.get('distance', '').strip()
+        country = int(request.POST.get('country', '1').strip())
 
         if distance:
             distance = int(distance)
@@ -42,8 +45,12 @@ def people_index(request):
             if available_for_work:
                 available_for_work = asbool(available_for_work)
 
-        if postal_code and distance:
-            region = get_region_by_postal(request.db_session, postal_code)
+        if country and postal_code and distance:
+            region = get_region_by_postal(
+                request.db_session,
+                postal_code,
+                country
+            )
 
             if region:
                 distance_settings = {
@@ -51,7 +58,6 @@ def people_index(request):
                     'lat': region.latitude,
                     'lon': region.longitude
                 }
-
 
     data = get_users(
         request,
@@ -72,8 +78,13 @@ def people_index(request):
         data['postal_code'] = postal_code
         data['distance'] = distance
 
+    if country:
+        data['country'] = country
+
     if available_for_work is not None:
         data['available_for_work'] = available_for_work
+
+    data['countries'] = get_all_countries(request.db_session)
 
     return {
         'data': data
@@ -90,7 +101,11 @@ def people_profile_view(request):
         request.matchdict['username']
     )
 
-    region = get_region_by_postal(request.db_session, user.profile.postal)
+    region = get_region_by_postal(
+        request.db_session,
+        user.profile.postal,
+        user.profile.country_pk
+    )
 
     data = {}
 
@@ -113,8 +128,8 @@ def people_profile_view(request):
 
 def handle_profile_update(event):
     """ This function is fired off from the horus profile view.
-    We have extended the profile to have extra data and we handle that data 
-    here 
+    We have extended the profile to have extra data and we handle that data
+    here
     """
     request = event.request
     context = request.context
