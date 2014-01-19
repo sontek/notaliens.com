@@ -25,6 +25,7 @@ site_tags = Table(
     Column('site_tag_pk', Integer, ForeignKey('site_tag.pk')),
 )
 
+
 class SiteTag(Base, JsonSerializableMixin, TranslatableMixin):
     __translatables__ = ['name']
     name = Column(UnicodeText, nullable=False, unique=True)
@@ -47,6 +48,7 @@ class Site(Base, JsonSerializableMixin, TranslatableMixin):
         results = JsonSerializableMixin.__json__(self, request)
         return results
 
+
 @perflog()
 def get_site_by_pk(session, site_pk, from_cache=True):
     query = session.query(Site).filter(Site.pk == site_pk)
@@ -56,6 +58,7 @@ def get_site_by_pk(session, site_pk, from_cache=True):
     site = query.one()
 
     return site
+
 
 @perflog()
 def get_sites_from_db(session, page, limit, search_text=None):
@@ -83,7 +86,8 @@ def get_sites_from_db(session, page, limit, search_text=None):
         offset = page * limit
         query = query.offset(offset)
 
-    return query
+    return query.all()
+
 
 @perflog()
 def get_site_count_from_db(session):
@@ -92,6 +96,7 @@ def get_site_count_from_db(session):
     results = query.one()
 
     return results[0]
+
 
 def get_sites(request, search_text=None, page=0, limit=50):
     """ This will get the sites limited by `page` and `limit`.  It will

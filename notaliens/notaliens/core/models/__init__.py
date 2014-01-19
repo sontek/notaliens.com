@@ -19,9 +19,9 @@ from notaliens.cache.sa import query_callable
 from notaliens.cache import regions
 from six import text_type
 
-DBSession = scoped_session(
-    sessionmaker(query_cls=query_callable(regions))
-)
+# TODO: Improve cache of SQL wueries
+# DBSession = scoped_session(sessionmaker(query_cls=query_callable(regions)))
+DBSession = scoped_session(sessionmaker())
 
 
 class UTCNow(expression.FunctionElement):
