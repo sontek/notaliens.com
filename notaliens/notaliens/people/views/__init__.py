@@ -26,6 +26,7 @@ def people_index(request):
     postal_code = None
     distance = None
     available_for_work = None
+    country = None
 
     if request.method == 'GET':
         page = int(request.matchdict.get('page', page))
