@@ -33,8 +33,8 @@ def people_index(request):
     if distance:
         distance = int(distance)
 
-    if 'available_for_work' in request.POST:
-        available_for_work = request.POST.get('available_for_work', None)
+    if 'available_for_work' in request.params:
+        available_for_work = request.params.get('available_for_work', False)
 
         if available_for_work:
             available_for_work = asbool(available_for_work)
