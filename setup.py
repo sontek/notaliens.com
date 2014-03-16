@@ -40,6 +40,7 @@ requires = [
     'six',
     'sqlalchemy',
     'validictory',
+    'waitress',
     'zope.sqlalchemy'
 ] + get_postgres_dependencies()
 

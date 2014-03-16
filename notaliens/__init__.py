@@ -15,6 +15,7 @@ if is_pypy:
 
 
 def setup_includes(config):
+    config.include('deform_bootstrap')
     config.include('pyramid_mailer')
     config.include('pyramid_tm')
     config.include('notaliens.cache')

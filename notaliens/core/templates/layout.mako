@@ -9,6 +9,7 @@
 
     <!-- Le styles -->
     <link href="${request.static_url('notaliens:static/css/bootstrap.min.css')}" rel="stylesheet">
+    <link href="${request.static_url('notaliens:static/css/dashboard.css')}" rel="stylesheet">
     <script type="text/javascript" src="${request.static_url('notaliens:static/js/jquery.js')}"></script>
 
     <style type="text/css">
@@ -35,20 +36,27 @@
   </head>
 
   <body>
-
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="navbar-inner">
-          <div class="container-fluid">
-            <a class="brand" href="#">Not Aliens</a>
-              <div class="nav-collapse collapse">
-                <ul class="nav">
-                  % if request.matched_route:
-                    <li ${'class=active' if request.matched_route.name.startswith('index') else ''}><a href="/">Home</a></li>
-                    <li ${'class=active' if request.matched_route.name.startswith('people') else ''}><a href="/people/">People</a></li>
-                    <li ${'class=active' if request.matched_route.name.startswith('sites') else ''}><a href="/sites/">Sites</a></li>
-                    <li ${'class=active' if request.matched_route.name.startswith('jobs') else ''}><a href="/jobs/">Jobs</a></li>
-                  % endif
-                </ul>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">
+            NotAliens</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            % if request.matched_route:
+                <li ${'class=active' if request.matched_route.name.startswith('index') else ''}><a href="/">Home</a></li>
+                <li ${'class=active' if request.matched_route.name.startswith('people') else ''}><a href="/people/">People</a></li>
+                <li ${'class=active' if request.matched_route.name.startswith('sites') else ''}><a href="/sites/">Sites</a></li>
+                <li ${'class=active' if request.matched_route.name.startswith('jobs') else ''}><a href="/jobs/">Jobs</a></li>
+            % endif
+          </ul>
                 <div class="navbar-form pull-right">
                   % if request.user:
                     Welcome ${request.user.profile.display_name} (<a href="${request.route_url('logout')}">Logout</a>)
@@ -56,21 +64,20 @@
                     <a href="${request.route_url('login')}">Login</a>
                   % endif
                 </div>
-              </div><!--/.nav-collapse -->
-          </div>
         </div>
       </div>
+    </div>
 
-      <div class="container-fluid">
-        ${render_flash_messages()|n}
-        ${next.body()}
-        <hr>
+    <div class="container-fluid">
+      ${render_flash_messages()|n}
+      ${next.body()}
+      <hr>
 
-        <footer>
-          <p>&copy; NotAliens 2013</p>
-        </footer>
+      <footer>
+        <p>&copy; NotAliens 2013</p>
+      </footer>
 
-      </div><!--/.fluid-container-->
+    </div><!--/.fluid-container-->
 
 
     <!-- Le javascript
