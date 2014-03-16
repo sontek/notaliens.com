@@ -14,10 +14,6 @@ import math
     route_name='people_index',
     renderer='notaliens:people/templates/index.mako'
 )
-@view_config(
-    route_name='people_index_paged',
-    renderer='notaliens:people/templates/index.mako'
-)
 def people_index(request):
     max_rows = 10
     page = 0
@@ -28,36 +24,34 @@ def people_index(request):
     available_for_work = None
     country = None
 
-    if request.method == 'GET':
-        page = int(request.matchdict.get('page', page))
-    elif request.method == 'POST':
-        search_text = request.POST.get('search', '').strip()
-        postal_code = request.POST.get('postal_code', '').strip()
-        distance = request.POST.get('distance', '').strip()
-        country = int(request.POST.get('country', '1').strip())
+    page = int(request.params.get('page', page))
+    search_text = request.params.get('search', '').strip()
+    postal_code = request.params.get('postal_code', '').strip()
+    distance = request.params.get('distance', '').strip()
+    country = int(request.params.get('country', '1').strip())
 
-        if distance:
-            distance = int(distance)
+    if distance:
+        distance = int(distance)
 
-        if 'available_for_work' in request.POST:
-            available_for_work = request.POST.get('available_for_work', None)
+    if 'available_for_work' in request.POST:
+        available_for_work = request.POST.get('available_for_work', None)
 
-            if available_for_work:
-                available_for_work = asbool(available_for_work)
+        if available_for_work:
+            available_for_work = asbool(available_for_work)
 
-        if country and postal_code and distance:
-            region = get_region_by_postal(
-                request.db_session,
-                postal_code,
-                country
-            )
+    if country and postal_code and distance:
+        region = get_region_by_postal(
+            request.db_session,
+            postal_code,
+            country
+        )
 
-            if region:
-                distance_settings = {
-                    'distance': distance,
-                    'lat': region.latitude,
-                    'lon': region.longitude
-                }
+        if region:
+            distance_settings = {
+                'distance': distance,
+                'lat': region.latitude,
+                'lon': region.longitude
+            }
 
     data = get_users(
         request,

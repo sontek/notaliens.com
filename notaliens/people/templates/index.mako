@@ -1,5 +1,5 @@
 <%inherit file="notaliens:core/templates/layout.mako"/>
-<form class="form-search" method="POST">
+<form class="form-search" method="GET">
       <div>
         <label>Search Text</label>
         % if 'search_text' in data:
@@ -92,9 +92,11 @@
 </table>
 <div class="pagination">
   <ul>
+    <% qs = request.GET %>
     % for i in range(0, data['pages']):
+      <% qs['page'] = str(i) %>
       <li ${'class=disabled' if data['current_page'] == i else ''}>
-        <a href="${request.route_url('people_index_paged', page=i)}" >${i+1}</a>
+        <a href="${request.route_url('people_index', _query=qs)}" >${i+1}</a>
       </li>
     % endfor
   </ul>
