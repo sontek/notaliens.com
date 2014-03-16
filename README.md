@@ -64,14 +64,20 @@ Before running buildout, you need to make sure you have postgresql installed.
 ## Finally
 
     $ sudo su - postgres
-    $ createuser -s <your user name>
+    $ createuser notaliens -P
+    $ createdb notaliens -O notaliens
     $ exit
-    $ createdb notaliens
-    $ bin/buildout
-    $ bin/notaliens_update_geoip notaliens/development.ini
-    $ bin/notaliens_create_db notaliens/development.ini
-    $ bin/notaliens_update_geoip_csv notaliens/development.ini
-    $ bin/notaliens_rebuild_index notaliens/development.ini
+    $ mkvirtualenv notaliens
+    $ cdvirtualenv
+    $ mkdir src
+    $ cd src
+    $ git clone git@github.com:sontek/notaliens.com.git
+    $ cd notaliens.com
+    $ pip install -e .
+    $ notaliens_update_geoip development.ini
+    $ notaliens_create_db development.ini
+    $ notaliens_update_geoip_csv development.ini
+    $ notaliens_rebuild_index development.ini
 
 Running the application server:
 

@@ -5,7 +5,8 @@ import requests
 import sys
 import six
 import csv
-
+import math
+from threading import Thread
 from os import listdir
 
 from sqlalchemy import engine_from_config
@@ -44,6 +45,13 @@ if six.PY3:
     csv_reader = csv.reader
 else:
     csv_reader = latin1_csv_reader
+
+
+def chunks(source, chunk_size):
+    """
+    Splits a list up into chunks
+    """
+    return [source[i:i+chunk_size] for i in range(0, len(source), chunk_size)]
 
 
 def update(argv=sys.argv):
@@ -89,8 +97,11 @@ def update(argv=sys.argv):
     GeoRegion.__table__.create(engine)
 
     countries = {}
+
     for country in db_session.query(Country).all():
         countries[country.alpha2] = country
+
+    db_session.commit()
 
     if six.PY3:
         infile = open(final_path, 'r', newline='', encoding='latin1')
@@ -101,48 +112,69 @@ def update(argv=sys.argv):
         reader = csv_reader(f, delimiter=',')
 
         rows = list(reader)
-        total_rows = len(rows)
 
-        postals = {}
+        chunk_size = 5000
+        split_rows = chunks(rows[2:], chunk_size)
+        thread_count = 10.0
+        row_len = len(split_rows)
+        loops = math.ceil(row_len/thread_count)
+        current_row = 0
 
-        for count, (
-            locid, country_code, region, city, postal_code, latitude,
-                longitude, metro_code, area_code
-        ) in enumerate(rows[2:]):
-            if country_code not in countries:
-                # Should always be ok, only ones not there are anonymous
-                # proxy, and regions like EU
-                print("Country Code %s isn't in our DB" % country_code)
-                continue
-            else:
-                country_obj = countries[country_code]
+        total = 0
 
-            ip = GeoRegion(
-                country=country_obj,
-                region=region,
-                city=city,
-                postal_code=postal_code,
-                latitude=latitude,
-                longitude=longitude,
-                metro_code=metro_code,
-                area_code=area_code
-            )
+        for i in range(int(loops)):
+            threads = []
 
-            postals[postal_code] = ip
+            for j in range(int(thread_count)):
+                if current_row < row_len:
+                    rows = split_rows[current_row]
+                    t = Thread(
+                        target=write_to_db,
+                        args=(
+                            db_session,
+                            rows,
+                            countries
+                        )
+                    )
+                    threads.append(t)
+                    current_row += 1
 
-            db_session.add(ip)
+            [x.start() for x in threads]
 
-            if count % 5000 == 0:
-
-                db_session.flush()
-                log.info('Read %s of %s' % (count, total_rows))
+            for x in threads:
+                x.join()
+                total += int(thread_count) * chunk_size
+                logging.info(
+                    "Done adding %s locations in DB\n" % total
+                )
 
         log.info('Finished, pushing to the database')
 
-        log.info('Updating current users lat/long in DB')
 
-        refresh_users_location(db_session)
+def write_to_db(db_session, rows, countries):
+    for count, (
+            locid, country_code, region, city, postal_code, latitude,
+            longitude, metro_code, area_code
+    ) in enumerate(rows):
+        if country_code not in countries:
+            # Should always be ok, only ones not there are anonymous
+            # proxy, and regions like EU
+            print("Country Code %s isn't in our DB" % country_code)
+            continue
+        else:
+            country_obj = countries[country_code]
 
-        db_session.commit()
+        ip = GeoRegion(
+            country_pk=country_obj.pk,
+            region=region,
+            city=city,
+            postal_code=postal_code,
+            latitude=latitude,
+            longitude=longitude,
+            metro_code=metro_code,
+            area_code=area_code
+        )
 
-        log.info('Done!')
+        db_session.add(ip)
+
+    db_session.commit()
