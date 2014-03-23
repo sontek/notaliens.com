@@ -242,13 +242,12 @@ def generate_default_data(session):
     return global_data
 
 
-def main(argv=sys.argv):
-    if len(argv) != 2:
-        usage(argv)
+def main(config_file):
+#    if len(argv) != 2:
+#        usage(argv)
 
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    env = bootstrap(config_uri)
+    setup_logging(config_file)
+    env = bootstrap(config_file)
     settings = env['registry'].settings
     request = env['request']
     engine = engine_from_config(settings, 'sqlalchemy.')
