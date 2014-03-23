@@ -61,12 +61,11 @@ def update(argv=sys.argv):
     `geoip.city.destination`.
 
     """
-    if len(argv) != 2:
-        usage(argv)
+#    if len(argv) != 2:
+#        usage(argv)
 
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
+    setup_logging(config_file)
+    settings = get_appsettings(config_file)
     source = settings['geoip.city.csv_source']
     destination = settings['geoip.city.csv_destination']
 
