@@ -74,15 +74,16 @@ def update(argv=sys.argv):
     db_session = scoped_session(sessionmaker())
     db_session.configure(bind=engine)
 
-    if source.startswith('http://'):
+    if os.path.isfile(source):
+        log.info("Opening %s...", source)
+        compressed = zipfile.ZipFile(source)
+    else:
+        source = settings['geoip.city.csv_url']
         log.info("Downloading %s...", source)
         response = requests.get(source)
         log.info("Downloading done.")
-
         compressed = zipfile.ZipFile(StringIO(response.content))
-    else:
-        log.info("Opening %s...", source)
-        compressed = zipfile.ZipFile(source)
+
 
     log.info("Writing to %s...", destination)
     compressed.extractall(path=destination)
