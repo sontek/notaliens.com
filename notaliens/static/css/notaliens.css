@@ -34,3 +34,7 @@ br.clear {
   margin-bottom: 20px;
   padding-bottom: 20px;
 }
+
+.pagination a {
+  color: red !important;
+}
