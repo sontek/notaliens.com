@@ -51,7 +51,7 @@ class NotAliensCommand(object):
         elif self.option.location:
             return self.refresh_user_location()
         elif self.option.task_queue:
-            return self.worker()
+            return self.task_queue()
 
     def createdb(self):
         return create.main(self.config_file)
