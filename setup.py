@@ -50,7 +50,6 @@ main = notaliens:main
 
 [console_scripts]
 notaliens = notaliens.scripts.notaliens_cmd:main
-notaliens_create_db = notaliens.scripts.create:main
 """  # nopep8
 
 setup(
