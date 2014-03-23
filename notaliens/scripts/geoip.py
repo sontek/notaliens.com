@@ -23,19 +23,18 @@ def usage(argv):
     sys.exit(1)
 
 
-def update(argv=sys.argv):
+def update(config_file):
     """
     Download the GeoIP database from the URL provided under the config key
     `geoip.city.source` and save it under the path provided by the config key
     `geoip.city.destination`.
 
     """
-    if len(argv) != 2:
-        usage(argv)
+#    if len(argv) != 2:
+#        usage(argv)
 
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
+    setup_logging(config_file)
+    settings = get_appsettings(config_file)
     source = settings['geoip.city.source']
     output = settings['geoip.city.destination']
     log.info("Downloading %s...", source)

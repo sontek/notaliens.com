@@ -21,13 +21,12 @@ def usage(argv):
     sys.exit(1)
 
 
-def update(argv=sys.argv):
-    if len(argv) != 2:
-        usage(argv)
+def update(config_file):
+#    if len(argv) != 2:
+#        usage(argv)
 
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
+    setup_logging(config_file)
+    settings = get_appsettings(config_file)
 
     engine = engine_from_config(settings, 'sqlalchemy.')
     db_session = scoped_session(sessionmaker())

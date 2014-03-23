@@ -74,10 +74,7 @@ Before running buildout, you need to make sure you have postgresql installed.
     $ git clone git@github.com:sontek/notaliens.com.git
     $ cd notaliens.com
     $ pip install -e .
-    $ notaliens_update_geoip development.ini
-    $ notaliens_create_db development.ini
-    $ notaliens_update_geoip_csv development.ini
-    $ notaliens_rebuild_index development.ini
+    $ notaliens --init
 
 Running the application server:
 
@@ -85,7 +82,7 @@ Running the application server:
 
 Running the task queue worker:
 
-    $ bin/notaliens_task_queue notaliens/development.ini
+    $ notaliens --task-queue
 
 We also have support for caching SQL queries via redis and using elasticsearch
 for full text search, so use your distro to install those if you would like
