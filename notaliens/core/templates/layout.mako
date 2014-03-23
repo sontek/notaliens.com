@@ -24,6 +24,7 @@
 
     <link href="${request.static_url('notaliens:static/css/bootstrap-responsive.min.css')}" rel="stylesheet">
     <link href="${request.static_url('notaliens:static/css/notaliens.css')}" rel="stylesheet">
+    <link href="${request.static_url('notaliens:static/js/select2/select2.css')}" rel="stylesheet">
 
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -89,6 +90,7 @@
     <script type="text/javascript" src="${request.static_url('notaliens:static/js/backbone.routemanager.js')}"></script>
     <script type="text/javascript" src="${request.static_url('notaliens:static/js/hogan-3.0.0.js')}"></script>
     <script type="text/javascript" src="${request.static_url('notaliens:static/js/moment.js')}"></script>
+    <script type="text/javascript" src="${request.static_url('notaliens:static/js/select2/select2.min.js')}"></script>
 
     <%block name="javascript"/>
     ${javascript()}

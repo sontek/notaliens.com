@@ -1,4 +1,10 @@
 <%inherit file="notaliens:core/templates/layout.mako"/>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $("#country_select").select2({'width': '240'});
+  });
+</script>
+
 <form class="form-search" method="GET">
       <div>
         <label>Search Text</label>
@@ -15,7 +21,7 @@
         % else:
           <input type="text" class="input-medium search-query" name="postal_code">
         % endif
-        <select name="country">
+        <select name="country" id="country_select">
           % for country in data['countries']:
               % if 'country' in data and country.pk == data['country']:
                   <option value="${country.pk}" selected>${country.name}</option>
@@ -91,7 +97,7 @@
 % endfor
 </table>
 <div class="pagination">
-  <ul>
+  <ul class='pagination'>
     <% qs = request.GET %>
     % for i in range(0, data['pages']):
       <% qs['page'] = str(i) %>
