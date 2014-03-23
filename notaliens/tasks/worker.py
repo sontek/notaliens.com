@@ -14,16 +14,12 @@ def usage(argv):
           '(example: "%s development.ini")' % (cmd, cmd))
     sys.exit(1)
 
-def main(argv=sys.argv):
+def main(config_file):
     """
     Launches a pyres worker using the host and queues provided
     by the config keys `pyres.host` and `pyres.queues`
     """
-    if len(argv) != 2:
-        usage(argv)
-
-    config_uri = argv[1]
-    settings = get_appsettings(config_uri)
+    settings = get_appsettings(config_file)
 
     host = settings['pyres.host']
     queues = settings['pyres.queues'].strip().split(',')
